@@ -1,0 +1,877 @@
+<?php
+define('IN_XD',true);
+session_start();
+require("include/common.inc.php");
+require("include/Wxjs.class.php");
+$sql="select * from tbl_param_config limit 0,1";
+$res=mysql_query($sql);
+$data=mysql_fetch_assoc($res);
+$Wxjs=new Wxjs($data['appid'],$data['appsecret']);
+$shareScript=$Wxjs->getShareScript();
+$infoid=trim($_GET['fid']);
+$sqld="select * from tbl_site  where id=1";
+$queryd=mysql_query($sqld);
+$rowd=mysql_fetch_array($queryd);
+$fxdomains=explode("|",$rowd['fxdomain']);
+$suijishu=mt_rand(0,count($fxdomains)-1);
+if(!empty($fxdomains[$suijishu])){
+$fxdomain='http://'.$fxdomains[$suijishu];
+}
+else{
+	$fxdomain='http://'.$_SERVER['SERVER_NAME'];
+}
+if (is_numeric($infoid)){
+	$sql = "select * from tbl_info where infoid = ".$infoid;
+	$query=mysql_query($sql);
+	$row=mysql_fetch_array($query);
+	$sql = "select * from tbl_ad where id = ".$row['adid'];
+	$query=mysql_query($sql);
+	$rowad=mysql_fetch_array($query);
+    if($row['telnum'] != ""){
+		$telnum .= '<a href="tel:'.$row['telnum'].'" class="" style="width: 35px;height: 35px;padding-top: 5px;">
+		<img src="/images/phone.png" style="width: 35px;height: 35px" data-bd-imgshare-binded="1">
+		</a>';
+	  }
+	else{
+	   $telnum="";
+	  }
+	if(!empty($row['qrcode'])){
+		$telnum .= '<a href="#qrcode" class="" style="width: 35px;height: 35px;padding-top: 5px;">
+	<img src="/images/wechat.png" style="width: 35px;height: 35px" data-bd-imgshare-binded="1">
+		</a>';
+	}
+	 if($row['qqnum'] != ""){
+		$telnum .= '<a href="http://wpa.qq.com/msgrd?v=3&uin='.$row['qqnum'].'&site=qq&menu=yes" class="" style="width: 35px;height: 35px;padding-top: 5px;">
+		<img src="/images/qq.png" style="width: 35px;height: 35px" data-bd-imgshare-binded="1">
+		</a>';
+	  }
+	  	 if($rowad['adlbs'] != ""){
+		$telnum .= '<a href="'.$rowad['adlbs'].'" class="" style="width: 35px;height: 35px;padding-top: 5px;">
+		<img src="/images/lbs.png" style="width: 35px;height: 35px" data-bd-imgshare-binded="1">
+		</a>';
+	  }
+	$sql="update tbl_info set wcount=wcount+1 where infoid=".$infoid;
+	mysql_query($sql);
+}else{
+	echo "<script type='text/javascript'>alert('\u6587\u7ae0\u4e0d\u5b58\u5728\uff01');history.go(-1);</script>";
+	exit;
+}
+?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="dns-prefetch" href="//res.wx.qq.com">
+<link rel="dns-prefetch" href="//mmbiz.qpic.cn">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<title><?php echo urldecode($row['title']);?></title>
+<link rel="stylesheet" type="text/css" href="css/css_view.css">
+<link rel="stylesheet" type="text/css" href="css/amazeui.min.css" />
+<script type="text/javascript" src="js/jquery-2.0.3.min.js" ></script>
+<script type='text/javascript' src='js/patch/jquery.js'></script>
+<script type='text/javascript' src='js/patch/jquery.banner.js'></script>
+<meta name="referrer" content="never">
+<script>
+    $(function() {
+        var pattern = /^http:\/\/mmbiz/;
+		var prefix = 'http://<? echo $_SERVER['SERVER_NAME']; ?>/image_proxy.php?1=1&siteid=1&url=';
+        $("img").each(function(){
+            var src = $(this).attr('src');
+            if(pattern.test(src)){
+                var newsrc = prefix+src;
+                $(this).attr('src',newsrc);
+            }
+			//$('#js_content').autoIMG();
+        });
+    });
+</script>
+<?php
+if($row['zhedie']!=0){ ?>
+<script>
+$(document).ready(function(){
+var content_height=$('#js_content').height();
+if(content_height>700){
+$('#js_content').css('height','700px');
+$('#js_content').after('<div id="showallbtn" style="width:120px;height:30px;line-height:30px;text-align:center;margin:0 auto;border-radius:10px;color:#4C9AEA;border:1px solid #4C9AEA;margin-top:20px;margin-bottom:20px;">展开全文 ∨</div>')
+$('#showallbtn').click(function(){
+$('#js_content').removeAttr('style');
+$(this).remove();
+})
+}
+});
+</script>
+<?php } ?>
+<?php
+if(strpos($row['content'],"vid")>0&& $rowad['shipinpic']!=''){ ?>
+<?php } ?>
+<script type='text/javascript'>
+    setInterval(function(){
+		var dd=document.getElementById('topad').style.display;
+		if(dd=="none"){
+			document.getElementById('topad').style.display='block';
+			}
+	},40000);//界面加载四十秒后执行弹出。
+	//
+	 setInterval(function(){
+		var dd=document.getElementById('bannerDowm').style.display;
+		if(dd=="none"){
+			document.getElementById('bannerDowm').style.display='block';
+			}
+	},40000);//界面加载四十秒后执行弹出。
+</script>
+<script type="text/javascript" >
+function menuFixed(id){
+var obj = document.getElementById(id);
+var _getHeight = obj.offsetTop;
+window.onscroll = function(){
+changePos(id,_getHeight);
+}
+}
+function changePos(id,height){
+var obj = document.getElementById(id);
+var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+if(scrollTop < height){
+obj.style.position = 'relative';
+}else{
+obj.style.position = 'fixed';
+obj.style.top = '0';
+}
+}
+</script>
+<script type="text/javascript">
+window.onload = function(){
+menuFixed('topad');
+}
+//
+$(function(){
+$(".rich_media_meta_list span:first").css("display","none");
+}); 
+//
+</script>
+<style>
+.topad{ margin:0 auto;left:0; right:0; position:relative;  width:100%; max-width:650px; text-align:right;}
+/*.topad img{ width:100%;max-width:650px;}*/
+.teltopimg{width:10%; max-width:80px; min-width:50px;}
+.telimg{ width:10%; max-width:80px; min-width:50px;}
+.app-guide1 {
+	position:fixed;
+	bottom:0px;
+	left:0; right:0;
+	width:100%;
+	max-width:650px;
+	margin:0 auto;
+	background-color:rgba(0,0,0,0);
+	/*box-shadow:0 -1px 1px rgba(0,0,0,.10);*/
+	z-index:99999999999999999;
+}
+.app-guide1 .guide-cont {
+	position:relative;
+	display:block;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+	padding:4px 0;
+	margin:0 90px 0 20px
+}
+.app-guide1 .guide-cont.touch::before {
+	content:"";
+	width:100%;
+	height:100%;
+	background-color:rgba(0,0,0,.06);
+	position:absolute;
+	top:0;
+	left:-20px;
+	padding:0 90px 0 20px
+}
+.app-guide1 .guide-logo {
+	float:left;
+	width:42px;
+	height:42px;
+	vertical-align:top;
+	margin-right:8px
+}
+.app-guide1 .guide-slogon,.app-guide1 .guide-dc {
+	color:#fff;
+	font-size:16px;
+	line-height:20px;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	overflow:hidden
+}
+.app-guide1 .guide-slogon span {
+	color:#fff;
+	font-size:16px;
+	line-height:20px;
+	margin-right:6px
+}
+.app-guide1 .guide-slogon span:last-of-type {
+	margin-right:0
+}
+.app-guide1 .guide-dc {
+	color:#ccc;
+	font-size:14px;
+	line-height:22px
+}
+.app-guide1 .guide-btn {
+	position:absolute;
+	top:10px;
+	right:10px;
+	width:80px;
+	height:30px;
+	background-color:#62af01;
+	border:0 none;
+	border-radius:3px;
+	color:#fff;
+	font:14px/30px microsoft yahei,helvetica,arial,sans-serif;
+	text-align:center;
+	padding:0
+}
+.app-guide1 .guide-btn.touch {
+	background-color:#529301
+}
+.guide-close {
+	position:absolute;
+	top:10%;
+	right:0;
+	width:20px;
+	height:20px;
+	line-height:999em;
+	overflow:hidden;
+}
+.guide-close::before {
+	content:"";
+	position:absolute;
+	left:3px;
+	bottom:2px;
+	width:28px;
+	height:28px;
+	background-color:#262626;
+	border-radius:28px
+}
+.guide-close::after {
+	content:"";
+	position:absolute;
+	top:4px;
+	right:2px;
+	width:9px;
+	height:9px;
+	background:url(images/640.png) no-repeat 0 0;
+	-webkit-background-size:9px auto;
+	background-size:9px auto
+}
+.guide-fixed .footer {
+	padding-bottom:65px
+}
+.banner {
+	width: 100%;
+	overflow: hidden;
+	min-height:80px;
+	position: relative
+}
+.banList {
+	padding-left: 0em;
+	position: absolute;
+	min-height:100px;
+	width:100%;
+}
+.banList li {
+	opacity: 0;
+	position: absolute;
+	transform: scale(0);
+	transition: transform 0.5s ease 0s, opacity 1.5s ease 0s;
+	z-index: 1;
+	width:100%
+}
+.banList li.active {
+	opacity: 1;
+	transform: scale(1);
+	z-index: 2;
+}
+.fomW {
+	position: absolute;
+	bottom: 10px;
+	left: 50%;
+	height: 20px;
+	z-index: 9;
+	width: 1000px;
+	margin-left: -500px
+}
+.jsNav {
+	text-align: center;
+}
+.jsNav a {
+	display: inline-block;
+	background: #fff;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	margin: 0 5px;
+}
+.jsNav a.current {
+	background: #fc8f0f;
+	cursor: pointer
+}
+.quanjinga{position: absolute;right: 0;margin: 10px;font-size: 22px;}
+#quanpingtime{color: red;font-size: 25px;}
+.float_top{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	width:100%;
+	z-index: 100;
+	background-color:#FFFF00
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	text-align: right;
+	background-color: #FFFF00;
+	padding: 4px 30px;
+	border: 1px dashed #999999;
+}
+.rich_media_meta_list{
+}
+.rich_media_meta_nickname{
+	color:#607fa6;
+}
+.meipian_meta {
+position:fixed;
+top:50px;
+right:18px;
+z-index:108;
+ }
+  .meipian_meta span {
+    float: left;
+    color: #8c8c8c;
+    margin-right: 8px; }
+  .meipian_meta .music {
+    width: 42px;
+    height: 42px;
+    border-radius: 5px;
+    margin: 10px 8px 0 0;
+    padding: 0;
+    line-height: 42px;
+    cursor: pointer; }
+    .meipian_meta .music i {
+      float: left;
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin: 8px 10px 0 15px; }
+      .meipian_meta .music i[play=on] {
+        background-image: url("normalmusic.png");
+		background-size: contain;
+	background-repeat: no-repeat;
+-moz-transform:rotate(90deg); 
+-webkit-transform:rotate(90deg);
+transform:rotate(90deg);
+filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+		 }
+      .meipian_meta .music i[play=stop] {
+        background-image: url("normalmusic.png"); }
+    .meipian_meta .music span {
+      width: calc(100% - 70px);
+      width: -webkit-calc(100% - 70px);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+.line_02{
+    height: 1px;
+    border-top: 1px dashed #cccccc;
+    text-align: center;
+	background-color: #f3f3f3;
+	  color: #868686;
+}
+.line_02 span{
+    position: relative;
+    top: -12px;
+background-color: #f3f3f3;
+    padding: 0 20px;
+}
+.adpic{
+width: 98%;
+margin: 0 auto;
+  padding-bottom: 1px;
+}
+.adpic img{
+	width: 100%;
+}
+.profile_nickname{
+	display:none;
+}
+.profile_meta{
+	display:none;
+}
+.profile_avatar{
+	display:none;
+}  
+</style>
+</head>
+<body id="activity-detail" class="zh_CN ">
+<div style='margin:0 auto;width:0px;height:0px;overflow:hidden;'><img src="<?=empty($row['share_pic'])?'':'http://'.$_SERVER['HTTP_HOST'].'/'.$row['share_pic']?>"  width="700"/> </div>
+<?php 
+if($row['musicid']!=0){
+	$sql = "select * from tbl_music where id = ".$row['musicid'];
+	$query=mysql_query($sql);
+	$rowmusic=mysql_fetch_array($query);
+	// print_r($rowmusic);
+	// die;
+?>
+<div class="meipian_meta"> <span id="msplay" class="music" onClick="switchsound()"> <i play="on" id="music_icon"></i> <span id="music_desc">清晨</span> </span>
+  <script>
+			var music_url = "<?php echo $rowmusic['path']; ?>";
+		</script>
+  <script src="music_autoplay.js"></script>
+  <?php 
+		if($row['autoplay']==1){
+		?>
+  <!--控制是否自动播放-->
+  <script>
+		if (audio == null)
+	{
+		audio = document.createElement('audio');
+		audio.id = 'bgsound';
+		audio.src = music_url;
+		audio.loop = 'loop';
+		audio.preload='auto';
+		document.body.appendChild(audio);
+	}
+	if (audio.paused)
+	{
+		audio.play();
+		icon.setAttribute("play","stop");
+	}
+	else if (new Date().getTime() > timestamp + 1000)
+	{
+	audio.pause();
+	icon.setAttribute("play","on");
+	}
+		</script>
+  <!--控制是否自动播放结束-->
+  <?php 
+	}
+		?>
+</div>
+<?php } ?>
+<?php 
+if($row['is_quanping']==1 && $rowad['quanping']!=''){
+?>
+<script type="text/javascript">
+var daojs2 =<?php echo $row['qptime'];?>;
+$(function(){
+		setTimeout('daoJiShi2()',1000); 
+}); 
+function daoJiShi2(){
+	if(daojs2>0){　
+		$('#quanpingtime').html(daojs2);
+		daojs2--;
+		setTimeout('daoJiShi2()',1000); 
+	}else{
+		$('.quanping').css('display','none');
+		$('#topadqp').css('display','block');
+		$('#quanping2').css('display','block');
+		mTop=$("#shipin").offset();
+		var top=mTop.top;
+		$("#img").css("top",top);
+	}
+}
+</script>
+<?php
+if($rowad['quanping2']!=''){ 
+ ?>
+<div class="" id="topadqp" style="display:none;"> <a href="<?=$rowad['ad_link3']?>"> <img src="<?=$rowad['quanping2']?>" style="width:100%;max-height:300px;" > </a> </div>
+<?php } ?>
+<div class="quanping">
+  <!--<div class="app-guide1 adweix" id="bannerDowm" style="display:block">
+		<div class="am-text-right">
+		<?php echo $telnum;?>
+		<a href="javascript:;" class="am-icon-btn am-success am-margin-left-xs" style="width: 35px;height: 35px;padding-top: 5px;"><i class="am-icon-close" onClick="document.getElementById('bannerDowm').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click"></i></a>
+		</div>
+	    <a href="tel:<?=$rowad['ad_link']?>" ><img src="<?=$rowad['ad_img']?>" style="width:100%; max-height:300px;" ></a>
+	</div>
+	-->
+  <div class="quanjinga">倒计时 <span id="quanpingtime"><?php echo $row['qptime'];?></span> 秒</div>
+  <div> <a href="<?php echo $rowad['ad_link2'];?>"><img src="<?php echo $rowad['quanping'];?>" style="width: 100%;" /></a> </div>
+</div>
+<div id="quanping2" style="display:none;" >
+<?php  }else{
+	echo '<div id="quanping2">';
+} 
+?>
+<div class="rich_media ">
+<div class="rich_media_inner">
+<?php
+if($rowad['shipinpic']!=''&&strpos($row['content'],"vid")>0){ 
+ ?>
+<div id="img"  style="position:absolute;z-index:10;width:95%;height:300px;"> <a id="imghref" href="javascript:;" "="" onclick="top.location.href='ad.php?id=<?=$row['id']?>'" > <img id="warp_img" style="width: 100%;height:300px; display: none;" src="<?=$rowad['shipinpic']?>"> </a>
+  <div class="second" id="second" style="display:none;font-size:12px;position: absolute;color:#fff;right:0px;top:0px;background: rgb(0, 0, 0);padding: 5px 10px;">广告剩余<span id="second2">5</span>秒</div>
+</div>
+<?php } ?>
+<script type='text/javascript'>
+    var daojs =5;
+$(function(){
+    $('#img').click(function(){
+		mTop=$('#shipin').offset();
+		var top=mTop.top;
+		$('#img').css('top',top);
+        $('#warp_img').show();
+         $('#second').show();
+        setTimeout('daoJiShi()',1000);
+    });
+});
+$(function(){
+  mTop=$('#shipin').offset();
+		var top=mTop.top;
+		$('#img').css('top',top);
+});
+function daoJiShi(){
+    if(daojs>=0){
+        $('#second2').html(daojs);
+        daojs--;
+        setTimeout('daoJiShi()',1000);
+    }else{
+        $('#img').css('display','none');
+        var src=$('#aaa').attr('src');
+        var new_src=src.replace("&auto=0","&auto=0");
+        $('#aaa').attr('src',new_src);
+    }
+}
+</script>
+<h2 class="rich_media_title" id="activity-name" style="margin-top:0px;"><?php echo urldecode($row['title']);?></h2>
+<?php if($row['ifweizhi']==0 || $row['ifweizhi']==4){ ?>
+<div class="topad" id="topad" style="display:block">
+<?php if($row['adpic_one']==''){ ?>
+<a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" style="width:100%;max-height:300px;" > </a>
+<?php	}else if($row['adpic_two']==''){ ?>
+<div class="list_txt banner">
+<ul class="banList">
+<li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian" style="width:100%;max-height:300px;"> </a> </li>
+<li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+<?php }else{?>
+<div class="list_txt banner">
+  <ul class="banList">
+    <li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian" style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_two']?>" width="100%" style="width:100%;max-height:300px;"> </a> </li>
+    <?php } ?>
+  </ul>
+  <?php if($row['adpic_one']==''){ ?>
+  <?php	}else if($row['adpic_two']==''){ ?>
+  <div class="jsNav">
+    <div class="fomW"> <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a> </div>
+  </div>
+</div>
+<?php }else{ ?>
+<div class="jsNav">
+  <div class="fomW"> <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a> <a href="javascript:;" class="trigger"></a> </div>
+</div>
+</div>
+<?php } ?>
+<?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px"  onClick="document.getElementById('topad').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click"> </a>
+</div>
+<?php } ?>
+<?php
+if($row['ifPublicNumber']==1){
+?>
+<?php
+if($rowad['quanping2']!=''){ 
+ ?>
+<?php } ?>
+<div class="rich_media_meta_list"> <em id="post-date" class="rich_media_meta rich_media_meta_text"><?php echo $row['addtime']?></em> <a class="rich_media_meta rich_media_meta_link rich_media_meta_nickname" href="<?php echo $row['url2']?>" id="post-user">
+  <?=$row['gongzhonghao']?>
+  </a> </div>
+<?php } ?>
+<?php
+if($row['ifweizhi']==5 || $row['ifweizhi']==6|| $row['ifweizhi']==7){
+?>
+<div class="adpic"> 
+<?
+if(is_numeric($row['adlink'])){
+	?>
+<div class="adweix" id="bannerDowmD" style="display:block">
+  <div class="am-text-right"  style="display:none" > <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px"  onClick="document.getElementById('bannerDowmD').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click"> </a> </div>
+  <a href="tel:<?=$row['adlink']?>" > <img src="<?=$row['adpic']?>" style="width:100%; max-height:300px;" > </a> </div>
+<?
+	}else{
+		?>
+<div class=" adweix " id="bannerDowmD" style="display:block">
+<div class="am-text-right" style="display:none"> <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px" onClick="document.getElementById('bannerDowmD').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click" data-bd-imgshare-binded="1"> </a> </div>
+<?php if($row['adpic_one']==''){ ?>
+<a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" style="width:100%;max-height:300px;"> </a>
+<?php	}
+				else if($row['adpic_two']==''){ ?>
+<div class="list_txt banner">
+<ul class="banList">
+<li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian" style="width:100%;max-height:300px;"> </a> </li>
+<li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+<?php }
+				else{ ?>
+<div class="list_txt banner">
+  <ul class="banList">
+    <li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian"  style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_two']?>" width="100%" style="width:100%;max-height:300px;"> </a> </li>
+    <?php } ?>
+  </ul>
+  <div class="fomW">
+    <div class="jsNav">
+      <?php if($row['adpic_one']==''){ ?>
+      <?php	}else if($row['adpic_two']==''){ ?>
+      <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a>
+      <?php }else{ ?>
+      <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a> <a href="javascript:;" class="trigger"></a>
+      <?php } ?>
+    </div>
+  </div>
+</div>
+</div>
+<?
+}
+?>
+ </div>
+<?php } ?>
+<?php
+if($row['ifweizhi']==8){
+?>
+<a href="ad.php?id=<?=$row['id']?>">
+<marquee scrollamount="3" style="width:100%;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
+<?=$rowad['pmd']?>
+</marquee>
+</a>
+<?php } ?>
+<div id="page-content" class="layout">
+  <div id="img-content">
+    <div class="rich_media_content article-content" id="js_content">
+      <?php
+						echo $row['content'];
+	?>
+	<a>本页面内容来源于网络，如有侵权，请告知删除!</a>
+	 <?php
+if($row['qrcode']!=''){
+?>
+	<A NAME="qrcode"></a>
+    <div style="text-align:center; margin-top:50px;"> <img id="weixinerweima" src="<?=$row['qrcode']?>" border="0"  width="90%"/> </div>
+    <!--公众号二维码-->
+    <br>
+    <?php } ?>
+    </div>
+    <div class="rich_media_tool" id="js_toobar3" style="display: block;">
+      <div id="js_read_area3" class="media_tool_meta tips_global meta_primary" style="display:block;color:#8c8c8c!important;"><a href="toufang.php" style="display:block;color:#8c8c8c!important;">我也要投放广告</a></div>
+      <a id="js_report_article3" style="display:block;color:#8c8c8c!important;" class="media_tool_meta tips_global meta_extra"  href="complain.php?fid=<?php $infoid=trim($_GET['fid']);echo $infoid ?>">投诉</a> </div>
+  </div>
+</div>
+<div id="js_pc_qr_code" class="qr_code_pc_outer" style="display: block;">
+  <div class="qr_code_pc_inner">
+    <div class="qr_code_pc">
+      <script type="text/javascript">/* 2016/09/08 18:53 */var _qrContent='',_qrLogo='',_qrWidth=100,_qrHeight=100,_qrType = 'auto';if(!_qrContent) var _qrContent =escape(document.location.href);document.write(unescape("%3Cscript src='http://qrcode.leipi.org/js.html?qw="+_qrWidth+"&qh="+_qrHeight+"&qt="+_qrType+"&qc="+escape(_qrContent)+"&ql="+escape(_qrLogo)+"' type='text/javascript'%3E%3C/script%3E"));</script>
+      <p>微信扫一扫<br>
+        分享到朋友圈</p>
+    </div>
+  </div>
+</div>
+<?php
+if($row['ispl']==1){
+?>
+<!--WAP版-->
+<div id="SOHUCS" ></div>
+<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" 
+src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=cysVLMLDW&conf=prod_2497a750406c2dea7fdc1a078d9b8851">
+</script>
+<?php
+}
+?>
+<?php
+if($row['ifweizhi']==1){
+?>
+<br>
+<br>
+<?php } ?>
+</div>
+</div>
+<?php
+if($row['ifweizhi']==2 || $row['ifweizhi']==6){
+?>
+<!--      <div class="topad 1111" id="topad" style="display:block">
+		 <a href="ad.php?id=<?=$row['id']?>">
+		 <img src="<?=$row['adpic']?>" style="width:100%;max-height:300px;" ></a>
+		 <?php echo $telnum;?>	
+		 <a href="javascript:;" class="am-icon-btn am-success am-margin-left-xs" style="width: 35px;height: 35px;padding-top: 5px;">
+		 <i class="am-icon-close" onClick="document.getElementById('topad').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click">
+		 </i>
+		 </a>
+         </div>
+		 -->
+<div id="innerNav" style="padding: 10px 15px 5px;background-color: #f3f3f3;padding-top: 15px;"> </div>
+<div class="line_02"> <span>广告</span> </div>
+<div id="innerNav" style="padding: 10px 15px 5px;background-color: #f3f3f3;  padding-bottom: 10px;"> </div>
+<div class="adpic"> 
+<?
+if(is_numeric($row['adlink'])){
+	?>
+<div class="adweix" id="bannerDowmD1" style="display:block">
+  <div class="am-text-right"  style="display:none" > <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px"  onClick="document.getElementById('bannerDowmD1').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click"> </a> </div>
+  <a href="tel:<?=$row['adlink']?>" > <img src="<?=$row['adpic']?>" style="width:100%; max-height:300px;" > </a> </div>
+<?
+	}else{
+		?>
+<div class=" adweix " id="bannerDowmD1" style="display:block">
+<div class="am-text-right" style="display:none"> <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px" onClick="document.getElementById('bannerDowmD1').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click" data-bd-imgshare-binded="1"> </a> </div>
+<?php if($row['adpic_one']==''){ ?>
+<a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" style="width:100%;max-height:300px;"> </a>
+<?php	}
+				else if($row['adpic_two']==''){ ?>
+<div class="list_txt banner">
+<ul class="banList">
+<li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian" style="width:100%;max-height:300px;"> </a> </li>
+<li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+<?php }
+				else{ ?>
+<div class="list_txt banner">
+  <ul class="banList">
+    <li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian"  style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_two']?>" width="100%" style="width:100%;max-height:300px;"> </a> </li>
+    <?php } ?>
+  </ul>
+  <div class="fomW">
+    <div class="jsNav">
+      <?php if($row['adpic_one']==''){ ?>
+      <?php	}else if($row['adpic_two']==''){ ?>
+      <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a>
+      <?php }else{ ?>
+      <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a> <a href="javascript:;" class="trigger"></a>
+      <?php } ?>
+    </div>
+  </div>
+</div>
+<?
+}
+?>
+ </div>
+<?php } ?>
+<?php
+if($row['ifweizhi']==3){
+?>
+<div class="app-guide1 adweix" id="bannerDowm" style="display:block">
+<div class="am-text-right" style="margin-bottom:65px;"> <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px"  onClick="document.getElementById('bannerDowm').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click"> </a> </div>
+<a href="ad.php?id=<?=$row['id']?>">
+<marquee scrollamount="3" style="width:100%;position:absolute;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
+<?=$rowad['pmd']?>
+</marquee>
+</a>
+<?php } ?>
+<?php
+if($row['ifweizhi']==1 &&$row['ifweizhi']!=3|| $row['ifweizhi']==4|| $row['ifweizhi']==7){
+?>
+<?
+if(is_numeric($row['adlink'])){
+	?>
+<div class="app-guide1 adweix" id="bannerDowm" style="display:block">
+  <div class="am-text-right"> <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px"  onClick="document.getElementById('bannerDowm').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click"> </a> </div>
+  <a href="tel:<?=$row['adlink']?>" > <img src="<?=$row['adpic']?>" style="width:100%; max-height:300px;" > </a> </div>
+<?
+	}else{
+		?>
+		<br><br><br>
+<div class="app-guide1 adweix " id="bannerDowm" style="display:block">
+<div class="am-text-right"> <?php echo $telnum;?> <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img src="images/close.png" style="width: 35px;height: 35px" onClick="document.getElementById('bannerDowm').style.display='none'" data-gjalog="index_bottom_banner_close@atype=click" data-bd-imgshare-binded="1"> </a> </div>
+<?php if($row['adpic_one']==''){ ?>
+<a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" style="width:100%;max-height:300px;"> </a>
+<?php	}
+				else if($row['adpic_two']==''){ ?>
+<div class="list_txt banner">
+<ul class="banList">
+<li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian" style="width:100%;max-height:300px;"> </a> </li>
+<li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+<?php }
+				else{ ?>
+<div class="list_txt banner">
+  <ul class="banList">
+    <li class="active"> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic']?>" class="tupian"  style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_one']?>" style="width:100%;max-height:300px;"> </a> </li>
+    <li> <a href="ad.php?id=<?=$row['id']?>"> <img src="<?=$row['adpic_two']?>" width="100%" style="width:100%;max-height:300px;"> </a> </li>
+    <?php } ?>
+  </ul>
+  <div class="fomW">
+    <div class="jsNav">
+      <?php if($row['adpic_one']==''){ ?>
+      <?php	}else if($row['adpic_two']==''){ ?>
+      <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a>
+      <?php }else{ ?>
+      <a href="javascript:;" class="trigger current"></a> <a href="javascript:;" class="trigger"></a> <a href="javascript:;" class="trigger"></a>
+      <?php } ?>
+    </div>
+  </div>
+</div>
+</div>
+<?
+}
+?>
+<?php
+}
+?>
+<script>
+	window.shareData = {
+		"imgUrl": "<?=empty($row['share_pic'])?'':'http://'.$_SERVER['HTTP_HOST'].'/'.$row['share_pic']?>",
+		"timeLineLink": "<?=$fxdomain.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];?>",
+		"sendFriendLink": "<?=$fxdomain.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];?>",
+		"weiboLink": "<?=$fxdomain.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];?>",
+		"tTitle": "<?php echo urldecode($row['title']);?>",
+		"tContent": "<?=$row['share_desc']?>",
+		"fTitle": "<?php echo urldecode($row['title']);?>",
+	};
+</script>
+<?=$shareScript?>
+<?php
+if(!empty($_COOKIE['username'])){
+	if($row['userid'] == $_COOKIE['username']){
+		?>
+<style type="text/css">
+#navs{position:fixed;left:4px;bottom:250px;width:40px;height:40px;line-height:40px;list-style-type:none;margin:0;padding:0;text-align:center;color:#fff;cursor:pointer;}
+#navs>li,#navs:after{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:50%;-webkit-border-radius:50%;background-color:#4ECDC4;}
+#navs>li{transition:all .6s;-webkit-transition:all .6s;-moz-transition:.6s;}
+#navs:after{content:attr(data-close);z-index:1;border-radius:50%;-webkit-border-radius:50%;}
+#navs.active:after{content:attr(data-open);}
+#navs a{width:40px;height:40px;display:inline-block;border-radius:50%;-webkit-border-radius:50%;text-decoration:none;color:#fff;font-size:0.8em;}    
+</style>
+<ul id="navs" data-open="收起" data-close="菜单">
+  <li style="transition-delay: 0ms; transform: translate(60px, 0px); display:none"><a href="logout.php">退出</a></li>
+  <li style="transition-delay: 50ms; transform: translate(42.4264px, -42.4264px);display:none"><a href="fxedit.php?fid=<?=$row['infoid']?>" onClick="if (confirm('确定要编辑吗？')) return true; else return false;">编辑</a></li>
+  <li style="transition-delay: 100ms; transform: translate(0, -60px);display:none"><a href="edit.php">首页</a></li>
+</ul>
+<script type="text/javascript">
+(function(){
+	var ul=$("#navs"),li=$("#navs li"),i=li.length,n=i-1,r=60;
+	ul.click(function(){
+		$(this).toggleClass('active');
+		if($(this).hasClass('active')){
+			for(var a=0;a<i;a++){
+				li.eq(a).show();
+			}
+		}else{
+			li.hide();
+		}
+	});
+})($);
+</script>
+<?php
+	}
+}
+?>
+<script type="text/javascript">
+	$(function(){
+		 $(".banner").each(function(){
+			$(this).swBanner();
+		  });
+	});
+</script>
+</body>
+</html>

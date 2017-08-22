@@ -1,0 +1,20 @@
+<?php
+session_start();
+$mobile=$_POST['phone'];
+$code=rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9);
+$smsapi = "http://api.smsbao.com/";
+$user = "udowssms"; //短信平台帐号
+$pass = md5(118100); //短信平台密码
+$content="敬的客户，您在掌上推广手机校验码为".$code."，请您确保是您本人操作。";
+$phone =$mobile;//要发送短信的手机号码
+$sendurl = $smsapi."sms?u=".$user."&p=".$pass."&m=".$phone."&c=".urlencode($content);
+$result =file_get_contents($sendurl);
+if($result==0){
+	//$this->ajaxReturn(array('status'=>1;'msg'=>123123));
+     echo json_encode(array('status'=>1,'msg'=>$code)); 
+	$_SESSION["code"]=$code;
+}else{
+	//$this->ajaxReturn(array('status'=>0));
+	echo json_encode(array('status'=>0)); 
+}
+?>

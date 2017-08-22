@@ -1,0 +1,178 @@
+<?php
+define('IN_XD',true);
+session_start();
+require("include/common.inc.php");
+require('include/functions.php');
+require('include/QueryList.class.php');
+require("include/Image.class.php");
+$infoid=trim($_GET['fid']);
+ $fid=trim($_GET['fid']);
+	$sql = "select * from tbl_info where infoid = ".$infoid;
+	$query=mysql_query($sql);
+	$row=mysql_fetch_array($query);
+if($_GET["act"]=="del"){
+	if(is_uploaded_file($_FILES['upfile']['tmp_name'])){
+		$upfile=$_FILES["upfile"];
+		$string = strrev($_FILES['upfile']['name']);
+		$array = explode('.',$string);
+		$type=$upfile["type"];//上传文件的类型
+		$size=$upfile["size"];//上传文件的大小
+		$tmp_name=$upfile["tmp_name"];//上传文件的临时存放路径
+		$base_path='upload/'.date('Ymd');
+		if(!is_dir($base_path)){
+			mkdir($base_path);
+		}
+		$name = $base_path.'/'.time().'a.'.strrev($array[0]);
+		//判断是否为图片
+		switch ($type){
+			case 'image/pjpeg':$okType=true;
+				break;
+			case 'image/jpeg':$okType=true;
+				break;
+			case 'image/gif':$okType=true;
+				break;
+			case 'image/png':$okType=true;
+				break;
+		}
+		if($okType){
+			$error=$upfile["error"];//上传后系统返回的值
+			//把上传的临时文件移动到up目录下面
+			move_uploaded_file($tmp_name,$name);
+			if(Image::getImageInfo($name)==false){
+				@unlink ($name);
+				qy_alert_back('上传失败：非正常图片');
+			}
+			$share_pic=$name;
+		}else{
+			qy_alert_back('\u8bf7\u4e0a\u4f20\u006a\u0070\u0067\u002c\u0067\u0069\u0066\u002c\u0070\u006e\u0067\u7b49\u683c\u5f0f\u7684\u56fe\u7247\uff01');
+		}
+	}
+	else{
+		$share_pic=trim($_POST['share_pic']);
+	}
+	$infoid=trim($_POST['fid']);
+	$title=urlencode(trim($_POST['title']));
+	$gongzhonghao=trim($_POST['gongzhonghao']);
+	$content=trim($_POST['content']);
+	$share_desc=trim($_POST['share_desc']);
+	$sqlt="UPDATE tbl_info SET title='$title',gongzhonghao='$gongzhonghao',content='$content',share_pic='$share_pic',share_desc='$share_desc' WHERE infoid=".$infoid;
+	  mysql_query($sqlt);
+	 mysql_close();
+	 echo "<script type='text/javascript'>alert('编辑成功');location.href='view.php?fid=".$infoid."';</script>";
+	 exit;
+}
+?>
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>发布文章 - <?php echo $cfg_webname?></title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width , initial-scale=1.0 , user-scalable=0 , minimum-scale=1.0 , maximum-scale=1.0" />
+<!-- ueditor -->
+<script type="text/javascript" src="js/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="js/Ueditor/ueditor.all.js"></script>
+<!-- ueditor -->
+<!--    <script type="text/javascript" charset="utf-8" src="ueditor/ueditor.config-2.js"></script>-->
+<!--    <script type="text/javascript" charset="utf-8" src="ueditor/ueditor.all.min.js"> </script>-->
+<script type='text/javascript' src='js/jquery-2.0.3.min.js'></script>
+<script type='text/javascript' src='js/patch/mobileBUGFix.mini.js'></script>
+<!--<script type="text/javascript" charset="utf-8" src="ueditor/ueditor-ok.all.js"> </script>-->
+<script type="text/javascript">
+//实例化编辑器
+//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+UE.getEditor('editor');
+UE.getEditor('editora');
+</script>
+<link rel="stylesheet" href="css/css.css"> 
+<style type="text/css">
+.bot_main li.ico_1{
+  background:#F1901F;
+}
+</style>
+	</head>
+<body>
+<div style='margin-top:-17px;'></div>
+<div class="apply" id="apply">
+	<p>编辑文章</p>
+<div class="apply" id="apply">
+<div class="blank10"></div>  
+		<form action="?act=del" id="signupok" method="post" name="addform"  enctype="multipart/form-data" onSubmit="return check()">
+		<input type="hidden" name="fid" value="<?php echo $fid?>">
+		 <div class="blank10"></div>
+      <div class="btn_box" style="margin-bottom:10px;" align="center">
+        <button class="btn btn-primary"><font size="4"><font color=#FF0000>不想编辑,直接提交</font></font></button>
+      </div>
+		<dl class="clearfix">
+		<dd>标题(文章标题，也是分享标题)：</dd>
+       <dd> <input type="text" value="<?php echo urldecode($row['title']);?>" style="width:500px" name="title"></dd>
+		</dl>
+		<dl class="clearfix">
+			<dd>分享描述语：<span style="font-size:13px; color:#666;">（通过微信分享时显示在标题下方的描述语，不要超过50字)</span></dd>
+			<dd> <input type="text" value="<?php echo $row['share_desc']?>" style="width:500px" name="share_desc"></dd>
+		</dl>
+		<dl class="clearfix">
+			<dd>分享图片：<span style="font-size:13px; color:#666;">（通过微信分享时展示的缩略图)</span></dd>
+			<?php if($row['share_pic']):?>
+			<dd>
+				<img src="<?=$row['share_pic']?>" style="height:100px;">
+			</dd>
+			<?php endif;?>
+			<dd>
+				<input type="file" class="input_txt"   placeholder="选择上传分享图片" name="upfile" style="width: 100%;height: 50px;box-sizing: border-box;padding: 14px;color: #696969;font-size: 12px;line-height: 12px;border: #e6e6e6 1px solid;
+background: #fff;">
+				<input type="hidden" name="share_pic" value="<?=$row['share_pic']?>">
+			</dd>
+		</dl>
+		<dl class="clearfix">
+		<dd>公众号信息：<span style='margin-left:1px; margin-top:-5px; margin-right:10px; font-size:16px; color:#FF0000;'>偷偷告诉你：可以把这里换成广告图或广告文字</span></dd>
+		<dd>
+			<textarea id="editora" name="gongzhonghao"><?php  $html_gongzhonghao=str_replace('http://mmbiz','http://zfqp.jhycwx.com/image_proxy.php?1=1&url=http://mmbiz',$row['gongzhonghao']);echo $html_gongzhonghao;?></textarea>
+			<script type="text/javascript">
+				var ue_introduction = UE.getEditor('editora',{
+					toolbars:[
+						['bold','italic','forecolor','fontfamily','fontsize','|','justifyleft','justifyright','justifycenter','justifyjustify', '|','undo', 'redo','searchreplace', ],
+						['spechars','|','link','unlink','|', 'lineheight','touppercase','tolowercase','|', 'formatmatch','removeformat',],
+					],
+					initialFrameWidth:570,
+					initialFrameHeight:200,
+					elementPathEnabled:false,
+					wordCount:false,
+				});
+			</script>
+		</dd>
+		</dl>
+		</dd></dl>
+		<dl class="clearfix">
+		<dd>文章内容：</dd>
+		<div style='margin-left:1px; margin-top:-5px; margin-right:10px; font-size:16px; color:#FF0000;'>说明：建议使用电脑版发布文章,发布后的文章需要编辑可以在已发布列表进行编辑!</div>
+		<dd> 
+	  		<textarea id="editor" name="content">
+<?php  $html_content=str_replace('http://mmbiz','image_proxy.php?1=1&url=http://mmbiz',$row['content']);echo $html_content;?>
+</textarea>	
+			<script type="text/javascript">
+				var ue_introduction = UE.getEditor('editor',{
+					toolbars:[
+						['bold','italic','forecolor','fontfamily','fontsize','|','justifyleft','justifyright','justifycenter','justifyjustify', '|','undo', 'redo','searchreplace', ],
+						['spechars','|','link','unlink','|', 'lineheight','touppercase','tolowercase','|', 'formatmatch','removeformat',],
+					],
+					initialFrameWidth:570,
+					initialFrameHeight:200,
+					elementPathEnabled:false,
+					wordCount:false,
+				});
+			</script>
+		</dd>
+		</dl>
+		<label></label><div class="blank10"></div>
+		<div class="btn_box" style="margin-bottom:50px;" align="center">
+			<div class="btn_box">
+			<input type="submit" name="signup" class="button" value="确认提交">
+		</div>
+		</div>
+		<div class="blank10"></div>
+		</form>
+      </div>
+  </div>
+  </body>
+</html>
