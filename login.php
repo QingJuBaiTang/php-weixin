@@ -1,11 +1,8 @@
 <?php
 
 header("Content-type: text/html; charset=utf-8"); 
-
 error_reporting(0);
-
 define('IN_XD',true);
-
 session_start();
 
 require("include/common.inc.php");

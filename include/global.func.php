@@ -3,10 +3,12 @@ error_reporting(0);
 if(!defined('IN_XD')){
 	exit('Access deniend!');
 }
+
 function qy_alert_back($_info){
 	echo "<script type='text/javascript'>alert('$_info');history.back();</script>";
 	exit();
 }
+
 function qy_location($_info,$_url){
 	if (!empty($_info)) {
 		echo "<script type='text/javascript'>alert('$_info');location.href='$_url';</script>";
@@ -15,6 +17,7 @@ function qy_location($_info,$_url){
 		header('Location:'.$_url);
 	}
 }
+
 //分页
 function qy_page($_sql,$_size){
 	global $_page,$_pagesize,$_pagenum,$_pageabsolute,$_num;

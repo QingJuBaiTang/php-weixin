@@ -1,5 +1,4 @@
 <?php
-
 require_once 'WxAuth.class.php';
 
 class Wxjs{
