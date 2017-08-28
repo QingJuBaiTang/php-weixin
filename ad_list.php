@@ -101,22 +101,17 @@ $adnums = $rowu['adnums'] - $rowan['dd'];
                 ?>
                 <li style="height: 20px;">
                     <div class="list_txt" style="vertical-align:middle;">
-                        <!--					<img src="--><?//=$ad_img[0][0]
-                        ?><!--"  style="width:calc(100% - 100px); max-height:100px; max-width:650px; vertical-align:middle">-->
                         <span style="float:right;font-size:1.1em;margin-right:10px;margin-top:-5px; line-height:30px">
-<a style="height: 24px;line-height: 24px;padding: 0 11px;background: #09B1B9;border: 1px #26bbdb solid;border-radius: 3px;display: inline-block;text-decoration: none;font-size: 14px;outline: none; color:#fff"
-   href="ad_edit.php?id=<?= $row['id'] ?>&act=updata">修改</a>
-                            <!--						&nbsp;&nbsp;<br>-->
-<a style="height: 24px;line-height: 24px;padding: 0 11px;background: #09B1B9;border: 1px #26bbdb solid;border-radius: 3px;display: inline-block;text-decoration: none;font-size: 14px;outline: none; color:#fff"
-   href="ad_list.php?id=<?= $row['id'] ?>&act=del&page=<?= $_GET['page'] ?>"
-   onClick="if (confirm('删除后不可恢复，请谨慎选择!\r\n确定要删除吗？')) return true; else return false;">删除</a>
+                        <a style="height: 24px;line-height: 24px;padding: 0 11px;background: #09B1B9;border: 1px #26bbdb solid;border-radius: 3px;display: inline-block;text-decoration: none;font-size: 14px;outline: none; color:#fff" href="ad_edit.php?id=<?= $row['id'] ?>&act=updata">修改</a>
+                        <a style="height: 24px;line-height: 24px;padding: 0 11px;background: #09B1B9;border: 1px #26bbdb solid;border-radius: 3px;display: inline-block;text-decoration: none;font-size: 14px;outline: none; color:#fff" href="ad_list.php?id=<?= $row['id'] ?>&act=del&page=<?= $_GET['page'] ?>"
+                           onClick="if (confirm('删除后不可恢复，请谨慎选择!\r\n确定要删除吗？')) return true; else return false;">删除</a>
 					</span>
                     </div>
                 </li>
                 <?
                 $count++;
             }
-            ?>
+                ?>
             <li>
                 <?= qy_paging3() ?>
             </li>
