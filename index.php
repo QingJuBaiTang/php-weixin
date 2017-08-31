@@ -32,21 +32,9 @@ $query = mysql_query($sql);
 $maiguo = mysql_fetch_array($query);
 $s = $rowu['anums'] - $rowa['cc'];
 if ($_GET['act'] == 'add') {
-    if ($s < 1) {
-        header("Content-type:text/html;charset=utf-8");
-        echo "<script type='text/javascript'  >alert('\u60a8\u53d1\u5e03\u7684\u6587\u7ae0\u5df2\u7ecf\u8fbe\u5230\u4e0a\u9650\uff0c\u8bf7\u5145\u503c\u8d2d\u4e70\uff01');location.href='vip.php';</script>";
-        exit;
-    }
-    if ($tt < 0) {
-        header("Content-type:text/html;charset=utf-8");
-        echo "<script type='text/javascript' >alert('\u60a8\u7684\u4f1a\u5458\u65f6\u95f4\u5df2\u7ecf\u5230\u671f\uff0c\u8bf7\u8054\u7cfb\u5ba2\u670d\uff01');location.href='vip.php';</script>";
-        exit;
-    }
     $long = guolv(trim($_POST['wxlink']));
-    //$telno='134843204';
     $telno = trim($_POST['telnumber']);
     $qqno = trim($_POST['qqnumber']);
-    //$ifadtop='1';
     $ifadtop = trim($_POST['adweizhi']);
     $infoid = trim($_POST['artid']);
     $sharepic = trim($_POST['sharepic']);
@@ -447,7 +435,7 @@ if ($_GET['act'] == 'add') {
                     </select>
                 </dd>
 
-                <dl class="clearfix" style="display: none;">
+                <dl class="clearfix">
                     <dd><font color="#f00">广告位置：</font><br>
                         <input class="rad" type="radio" name="adweizhi" value="0" data-labelauty="顶部悬浮"/>
                         <input class="rad" name="adweizhi" type="radio" value="1" data-labelauty="底部悬浮"/>
@@ -567,17 +555,6 @@ if ($_GET['act'] == 'add') {
                     id="pc_18" class="cjclas" href="javascript:void(0);">星座</a> <a id="pc_19" class="cjclas"
                                                                                    href="javascript:void(0);">体育</a> <a
                     id="pc_20" class="cjclas" href="http://weixin.sogou.com/?p=73141200&kw=">更多</a></div>
-        <!--
-        <dl class="clearfix">
-            <dd>广告链接：</dd>
-            <dd><input type="tel" class="input_txt" value="" name="adlink" id="adlink" placeholder="请输入广告链接" style="height:50px;">
-            </dd>
-        </dl>
-        <dl class="clearfix">
-            <dd>广告图片：</dd>
-            <dd><input type="file" class="input_txt" type="file"  placeholder="选择上传广告图片" name="upfile" style="width: 100%;height:50px;box-sizing: border-box;padding: 14px;color: #696969;font-size: 12px;line-height: 12px;border: #e6e6e6 1px solid;background: #fff;"></dd>
-        </dl>
-        -->
         <div class="cjcontlist">
             <ul class="cjlist">
             </ul>
