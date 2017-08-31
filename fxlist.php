@@ -87,35 +87,10 @@ if ($_GET["act"] == "del") {
 </head>
 <body>
 <div class="apply" id="apply">
-    <p>文章列表<span style="float:right;font-size:12px;margin-right:10px">剩余文章数：<?= $s ?>&nbsp;&nbsp;剩余天数：<?= $tt ?>天</span>
+    <p>文章列表
+<!--        <span style="float:right;font-size:12px;margin-right:10px">剩余文章数：--><?//= $s ?><!--&nbsp;&nbsp;剩余天数：--><?//= $tt ?><!--天</span>-->
     </p>
-    <form action="?act=search" id="signupok" method="get">
-        <dl class="clearfix" style="width:50%; float:left; padding-top:10px">
-            <dd>
-                <select class="input_txt sel" name="adid">
-                    <option value="">请选择广告</option>
-                    <?
-                    $sql = "select * from tbl_ad where userid = '" . $_COOKIE['userid'] . "' ORDER by id DESC";
-                    $query = mysql_query($sql);
-                    while ($row = mysql_fetch_array($query)) {
-                        ?>
-                        <option value="<?= $row['id'] ?>"><?= $row['ad_title'] ?></option>
-                        <?
-                    }
-                    ?>
-                </select>
-            </dd>
-        </dl>
-        <dl class="clearfix" style="width:50%; float:left; padding-top:10px">
-            <dd>
-                <input type="text" class="input_txt sel" value='' name="title" id="adtitle" placeholder="请输入标题关键字"
-                       style="width:100%">
-            </dd>
-        </dl>
-        <div class="btn_box">
-            <input type="submit" class="button" value="搜索">
-        </div>
-        <br>
+    <form action="?act=search" id="signupok" method="get" style="margin-top: 10px;">
         <ul class="am-avg-sm-3 am-text-center admin-content-list">
             <li class="am-text-success">
                 <a href="./index.php?i=257&c=entry&do=list&m=weisrc_quickad" class="am-text-success"><span

@@ -7,6 +7,7 @@ require("include/Wxjs.class.php");
 require('include/functions.php');
 require('include/QueryList.class.php');
 //include 'phpQuery/phpQuery.php';
+
 function date_to_unixtime($date, $timezone = 'PRC') {
     $datetime = new DateTime($date, new DateTimeZone($timezone));
     return $datetime->format('U');
@@ -386,7 +387,9 @@ if ($_GET['act'] == 'add') {
 <body>
 <div class="apply" id="apply">
     <p style="text-align:left;padding-left:10px;">发布文章
-        <span style="float:right;font-size:0.7em;margin-right:10px; line-height:22px">
+
+        <!-- 隐藏 -->
+        <span style="visibility: hidden;float:right;font-size:0.7em;margin-right:10px; line-height:22px">
 		账户:<a><?php echo $_COOKIE['username']; ?>&nbsp;</a>
             <?php if (empty($maiguo['id'])) { ?>
                 <a href="vip.php" class="new_btn">点击充值</a>
@@ -395,6 +398,9 @@ if ($_GET['act'] == 'add') {
             <?php } ?>
             <br>
 		<a>剩余文章:<?= $s ?>&nbsp;&nbsp;天数:<?= $tt ?>天</a></span>
+        <!-- 隐藏 -->
+
+
     </p>
     <form action="?act=add" id="signupok" method="post" name="addform" enctype="multipart/form-data">
         <input type="hidden" name="artid" value="<?php echo time() . rand(10, 1000); ?>"/>
@@ -419,10 +425,12 @@ if ($_GET['act'] == 'add') {
             </dd>
         </dl>
         <div id="more" style="display:block">
-            <dl class="clearfix">
+
+
+            <dl class="clearfix" style="display: none">
                 <dd>
                     <select class="input_txt sel" name="adid">
-                        <option value="">请选择广告</option>
+<!--                        <option value="">请选择广告</option>-->
                         <?
                         $sql = "select * from tbl_ad where userid = '" . $_COOKIE['userid'] . "' ORDER by id DESC";
                         $query = mysql_query($sql);
@@ -435,27 +443,19 @@ if ($_GET['act'] == 'add') {
                     </select>
                 </dd>
             </dl>
+
+
             <dl class="clearfix">
-                <dd>
-                    <select class="input_txt" id="musiccat" name="musiccat"
-                            style="width:49%;border: #99CC33 1px solid;">
+                <dd style="display: none">
+                    <select class="input_txt" id="musiccat" name="musiccat" style="width:49%;border: #99CC33 1px solid;">
                         <option value="">选择音乐分类</option>
-                        <?
-                        $sql = "select * from tbl_music_cat";
-                        $query = mysql_query($sql);
-                        while ($row = mysql_fetch_array($query)) {
-                            ?>
-                            <option value="<?= $row['id'] ?>"><?= $row['name'] ?></option>
-                            <?
-                        }
-                        ?>
                     </select>
-                    <select class="input_txt" name="music" id="music" style="width:49%;border: #99CC33 1px solid;"
-                            onChange="showUser(this.value)">
+                    <select class="input_txt" name="music" id="music" style="width:49%;border: #99CC33 1px solid;" onChange="showUser(this.value)">
                         <option value="">选择音乐分类</option>
                     </select>
                 </dd>
-                <dl class="clearfix">
+
+                <dl class="clearfix" style="display: none">
                     <dd><font color="#f00">广告位置：</font><br>
                         <input class="rad" type="radio" name="adweizhi" value="0" data-labelauty="顶部悬浮"/>
                         <input class="rad" name="adweizhi" type="radio" value="1" data-labelauty="底部悬浮"/>
@@ -465,53 +465,41 @@ if ($_GET['act'] == 'add') {
                         <input class="rad" name="adweizhi" type="radio" value="6" data-labelauty="顶底固定"/><br>
                         <input class="rad" name="adweizhi" type="radio" value="8" data-labelauty="跑马灯[顶]"/>
                         <input class="rad" name="adweizhi" type="radio" value="3" data-labelauty="跑马灯[底]"/><br>
-                        <input class="rad" name="adweizhi" type="radio" id="adweizhibtm" value="7" checked="CHECKED"
-                               data-labelauty="顶部固定、底部悬浮"/>
+                        <input class="rad" name="adweizhi" type="radio" id="adweizhibtm" value="7" checked="CHECKED" data-labelauty="顶部固定、底部悬浮"/>
                     </dd>
-                    <dd><span style=" color:#f00; float:left">全屏广告：</span> <input onClick="qpShow();" class="rad"
-                                                                                  type="radio" name="adquanping"
-                                                                                  value="1" id="adquanping"
-                                                                                  class="radioItem"
-                                                                                  data-labelauty="显示"/>
-                        <input onClick="qpHide();" class="rad" name="adquanping" type="radio" id="adquanping2" value="0"
-                               checked="CHECKED" class="radioItem" data-labelauty="隐藏"/>
+                    <dd>
+                        <span style=" color:#f00; float:left">全屏广告：</span>
+                        <input onClick="qpShow();" class="rad" type="radio" name="adquanping" value="1" id="adquanping" class="radioItem" data-labelauty="显示"/>
+                        <input onClick="qpHide();" class="rad" name="adquanping" type="radio" id="adquanping2" value="0" checked="CHECKED" class="radioItem" data-labelauty="隐藏"/>
                     </dd>
-                    <dd class="quanpingtime" style="display:none; padding-left:20px;"><span
-                                style=" color:#f00; float:left">全屏时间：</span>
-                        <input class="rad" type="radio" name="qptime" value="3" id="qptime" class="radioItem"
-                               data-labelauty="3秒"/>
-                        <input class="rad" name="qptime" type="radio" value="5" checked="CHECKED" class="radioItem"
-                               data-labelauty="5秒"/>
+                    <dd class="quanpingtime" style="display:none; padding-left:20px;">
+                        <span style=" color:#f00; float:left">全屏时间：</span>
+                        <input class="rad" type="radio" name="qptime" value="3" id="qptime" class="radioItem" data-labelauty="3秒"/>
+                        <input class="rad" name="qptime" type="radio" value="5" checked="CHECKED" class="radioItem" data-labelauty="5秒"/>
                         <input class="rad" name="qptime" type="radio" value="7" class="radioItem" data-labelauty="7秒"/>
                     </dd>
-                    <dd class="is_quanping2" style="display:none; padding-left:20px"><span
-                                style=" color:#f00; float:left">全屏后顶部广告：</span>
-                        <input class="rad" name="is_quanping2" type="radio" value="1" class="radioItem"
-                               data-labelauty="显示"/>
-                        <input class="rad" name="is_quanping2" type="radio" value="0" checked="CHECKED"
-                               class="radioItem" data-labelauty="隐藏"/>
+                    <dd class="is_quanping2" style="display:none; padding-left:20px">
+                        <span style=" color:#f00; float:left">全屏后顶部广告：</span>
+                        <input class="rad" name="is_quanping2" type="radio" value="1" class="radioItem" data-labelauty="显示"/>
+                        <input class="rad" name="is_quanping2" type="radio" value="0" checked="CHECKED" class="radioItem" data-labelauty="隐藏"/>
                     </dd>
                     <o id='morexx' style='display:none'>
                         <dd>
                             <font color="#f00" style="float:left">背景音乐：</font>
                             <input class="rad" name="autoplay" type="radio" value="1" data-labelauty="自动播"/>
-                            <input class="rad" name="autoplay" type="radio" value="0" checked="CHECKED"
-                                   data-labelauty="手动播"/>
+                            <input class="rad" name="autoplay" type="radio" value="0" checked="CHECKED" data-labelauty="手动播"/>
                         </dd>
                         <dd><span style=" color:#F00; float:left">公众号：</span>
-                            <input class="rad" type="radio" name="ifgongzhonghao" value="1" checked="CHECKED"
-                                   data-labelauty="显示"/>
+                            <input class="rad" type="radio" name="ifgongzhonghao" value="1" checked="CHECKED" data-labelauty="显示"/>
                             <input class="rad" name="ifgongzhonghao" type="radio" value="0" data-labelauty="隐藏"/>
                         </dd>
                         <dd><span style="color:#F00; float:left">文章太长折叠：</span>
                             <input class="rad" type="radio" name="zhedie" value="1" data-labelauty="开启"/>
-                            <input class="rad" name="zhedie" type="radio" value="0" checked="CHECKED"
-                                   data-labelauty="关闭"/>
+                            <input class="rad" name="zhedie" type="radio" value="0" checked="CHECKED" data-labelauty="关闭"/>
                         </dd>
                         <dd><span style="color:#F00; float:left">开启文章评论：</span>
                             <input class="rad" type="radio" name="ispl" value="1" data-labelauty="开启"/>
-                            <input class="rad" name="ispl" type="radio" value="0" checked="CHECKED"
-                                   data-labelauty="关闭"/>
+                            <input class="rad" name="ispl" type="radio" value="0" checked="CHECKED" data-labelauty="关闭"/>
                         </dd>
                     </o>
                     <div style="width:100%; text-align:center">
@@ -519,26 +507,20 @@ if ($_GET['act'] == 'add') {
                         <span id="shouqibtn" style="display:none;">∧点击收起</span>
                     </div>
                 </dl>
+
                 <div class="blank10"></div>
-                <div class="btn_box">
-                    <input type="button" name="signup" class="button" value="直接编写文章"
-                           onClick="window.open('add_article.php');"
-                           style="width:32%;height:30px;line-height:30px; background-color:#66CCFF; font-size:14px"
-                           align="left">
-                    <input type="button" name="signup" class="button" value="购买会员" onClick="window.open('vip.php');"
-                           style="width:32%;height:30px;line-height:30px;background-color:#66CCFF; font-size:14px"
-                           align="left">
-                    <input type="button" name="signup" class="button" value="联系客服" onClick="window.open('kefu.php');"
-                           style="width:32%;height:30px;line-height:30px;background-color:#66CCFF; font-size:14px"
-                           align="left">
+
+                <div class="btn_box" style="display: none;">
+                    <input type="button" name="signup" class="button" value="直接编写文章" onClick="window.open('add_article.php');" style="width:32%;height:30px;line-height:30px; background-color:#66CCFF; font-size:14px" align="left">
+                    <input type="button" name="signup" class="button" value="购买会员" onClick="window.open('vip.php');" style="width:32%;height:30px;line-height:30px;background-color:#66CCFF; font-size:14px" align="left">
+                    <input type="button" name="signup" class="button" value="联系客服" onClick="window.open('kefu.php');" style="width:32%;height:30px;line-height:30px;background-color:#66CCFF; font-size:14px" align="left">
                 </div>
-                <style>
-                </style>
-                <dd style="color:#F1901F; font-size:12px;line-height:30px;  margin-top:6px; height:30px; border-top:#ccc 1px solid;">
+
+                <dd style="color:#F1901F; font-size:12px;line-height:30px;  margin-top:6px; height:30px; border-top:#ccc 1px solid; display: none;">
                     声明：禁止发布黄赌毒以及违反任何国家相关法律法规的信息
                 </dd>
             </dl>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 15px;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="display: none;margin-bottom: 15px;">
                 <tr>
                     <td align="center"><a href="http://weixin.sogou.com/"><img src="images/ico1.png" width="59"
                                                                                height="59" border="0"></a></td>
