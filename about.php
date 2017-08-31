@@ -5,6 +5,7 @@ session_start();
 require("include/common.inc.php");
 require("include/Wxjs.class.php");
 ?>
+
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
