@@ -6,7 +6,6 @@ require("include/common.inc.php");
 require("include/Wxjs.class.php");
 require('include/functions.php');
 require('include/QueryList.class.php');
-//include 'phpQuery/phpQuery.php';
 
 function date_to_unixtime($date, $timezone = 'PRC') {
     $datetime = new DateTime($date, new DateTimeZone($timezone));
@@ -15,16 +14,6 @@ function date_to_unixtime($date, $timezone = 'PRC') {
 
 if (!$_COOKIE['userid']) {
     echo "<script type='text/javascript' >location.href='login.php';</script>";
-    exit;
-}
-
-if ($_GET['catid']) {
-    $sql = "select * from tbl_music where cat_id='" . (int)$_GET['catid'] . "' ORDER by id DESC";
-    $query = mysql_query($sql);
-    while ($row = mysql_fetch_array($query)) {
-        $str .= '<option value="' . $row['id'] . '">' . $row['title'] . '</option>';
-    }
-    echo $str;
     exit;
 }
 
@@ -107,9 +96,9 @@ if ($_GET['act'] == 'add') {
     } else {
         $caiji = array("title" => array("title", "text"), "content" => array("body", "html"), "gongzhonghao" => "精选", "ywyuedu" => 10000,);
     }
+
     if (stristr($long, "zh.wikiomni.com")) {
-        function getHtml($url)
-        {
+        function getHtml($url) {
             $UserAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9B176 MicroMessenger/4.3.2';
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -139,16 +128,20 @@ if ($_GET['act'] == 'add') {
         $zhedie = trim($_POST['zhedie']);
         $qptime = trim($_POST['qptime']);
         $ispl = trim($_POST['ispl']);
+
         if ($rowad['wechat_url'] != "") {
             $long = $rowad['wechat_url'];
         }
+
         if ($rowad['wechat_name'] != "") {
             $gongzhonghao = $rowad['wechat_name'];
         }
+
         $sql = "insert into tbl_info values (0,'" . urldecode($title) . "','" . addslashes($content) . "','" . $rowad['ad_img'] . "','" . $rowad['ad_img_one'] . "','" . $rowad['ad_img_two'] . "','" . $rowad['ad_link'] . "','" . $_COOKIE['username'] . "',0,0,'" . date('Y-m-d') . "','" . $rowad['adtelnumber'] . "','" . $rowad['adqqnumber'] . "','" . $ifadtop . "','" . $gongzhonghao . "','" . $ifPublicNumber . "','" . $rowad['erweima'] . "','" . $ywyuedu . "','" . $infoid . "','" . $daili . "','" . $sharepic . "','" . $sharedesc . "','" . $adquanping . "','" . (int)$_POST['adid'] . "','" . (int)$_POST['music'] . "','" . (int)$_POST['autoplay'] . "','" . $rowad['gzurl'] . "','" . $zhedie . "','" . $qptime . "','" . $long . "','" . $ispl . "','" . $is_quanping2 . "',0)";
         mysql_query($sql);
         echo "<script type='text/javascript'>alert('\u53d1\u5e03\u6210\u529f\uff01');location.href='fxedit.php?fid=" . $infoid . "';</script>";
     }
+
     $quyu = '';
     $html = "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>" . $html;
     $hj = QueryList::Query($html, $caiji, $quyu);
@@ -420,14 +413,13 @@ if ($_GET['act'] == 'add') {
         <dl class="clearfix" style="display:none">
             <dd>联系电话：</dd>
             <dd>
-                <input type="hidden" class="input_txt" id="telnumber" value="13899999999" name="telnumber"
-                       placeholder="请输入电话号码">
+                <input type="hidden" class="input_txt" id="telnumber" value="13899999999" name="telnumber" placeholder="请输入电话号码">
             </dd>
         </dl>
         <div id="more" style="display:block">
 
 
-            <dl class="clearfix" style="display: none">
+            <dl class="clearfix">
                 <dd>
                     <select class="input_txt sel" name="adid">
 <!--                        <option value="">请选择广告</option>-->
@@ -455,7 +447,7 @@ if ($_GET['act'] == 'add') {
                     </select>
                 </dd>
 
-                <dl class="clearfix" style="display: none">
+                <dl class="clearfix" style="display: none;">
                     <dd><font color="#f00">广告位置：</font><br>
                         <input class="rad" type="radio" name="adweizhi" value="0" data-labelauty="顶部悬浮"/>
                         <input class="rad" name="adweizhi" type="radio" value="1" data-labelauty="底部悬浮"/>
@@ -465,7 +457,7 @@ if ($_GET['act'] == 'add') {
                         <input class="rad" name="adweizhi" type="radio" value="6" data-labelauty="顶底固定"/><br>
                         <input class="rad" name="adweizhi" type="radio" value="8" data-labelauty="跑马灯[顶]"/>
                         <input class="rad" name="adweizhi" type="radio" value="3" data-labelauty="跑马灯[底]"/><br>
-                        <input class="rad" name="adweizhi" type="radio" id="adweizhibtm" value="7" checked="CHECKED" data-labelauty="顶部固定、底部悬浮"/>
+                        <input class="rad" name="adweizhi" type="radio" id="adweizhibtm" checked="checked" value="7" data-labelauty="顶部固定、底部悬浮"/>
                     </dd>
                     <dd>
                         <span style=" color:#f00; float:left">全屏广告：</span>
@@ -515,23 +507,7 @@ if ($_GET['act'] == 'add') {
                     <input type="button" name="signup" class="button" value="购买会员" onClick="window.open('vip.php');" style="width:32%;height:30px;line-height:30px;background-color:#66CCFF; font-size:14px" align="left">
                     <input type="button" name="signup" class="button" value="联系客服" onClick="window.open('kefu.php');" style="width:32%;height:30px;line-height:30px;background-color:#66CCFF; font-size:14px" align="left">
                 </div>
-
-                <dd style="color:#F1901F; font-size:12px;line-height:30px;  margin-top:6px; height:30px; border-top:#ccc 1px solid; display: none;">
-                    声明：禁止发布黄赌毒以及违反任何国家相关法律法规的信息
-                </dd>
             </dl>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="display: none;margin-bottom: 15px;">
-                <tr>
-                    <td align="center"><a href="http://weixin.sogou.com/"><img src="images/ico1.png" width="59"
-                                                                               height="59" border="0"></a></td>
-                    <td align="center"><a href="http://xw.qq.com/m/news/index.htm"><img src="images/ico2.png" width="59"
-                                                                                        height="59" border="0"></a></td>
-                    <td align="center"><a href="http://m.toutiao.com/?W2atIF=1"><img src="images/ico3.png" width="59"
-                                                                                     height="59" border="0"></a></td>
-                    <td align="center"><a href="http://inews.ifeng.com/"><img src="images/ico4.png" width="59"
-                                                                              height="59" border="0"></a></td>
-                </tr>
-            </table>
         </div>
         <div align="center">
         </div>
@@ -635,24 +611,32 @@ if ($_GET['act'] == 'add') {
             document.addform.wxlink.focus();
             return false;
         }
+
         if (document.addform.adid.value == "") {
             alert('请选择广告！');
             document.addform.adid.focus();
             return false;
         }
+
         if (document.addform.telnumber.value == "") {
             alert('请输入电话号码！');
             document.addform.adid.focus();
             return false;
         }
+
         var wxurl = document.addform.wxlink.value; //获取Windowstext文本框的值
         var $t = wxurl.replace("https", "http");
+
         $('#wxlink').val($t);
+
         adweizhi = $("input[name='adweizhi']:checked").val();
+
         $.cookie('adweizhi', adweizhi, {
             expires: 7
         });
+
         document.addform.submit();
+
         return true;
     }
 </script>
