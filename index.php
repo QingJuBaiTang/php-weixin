@@ -149,9 +149,7 @@ if ($_GET['act'] == 'add') {
     $sharedesc = cut($body, 'var msg_desc = "', '"'); // 过滤描述
     $shareimage = str_replace('http://mmbiz', 'image_proxy.php?1=1&siteid=1&url=http://mmbiz', $shareimage);
     $sharepic = $shareimage;
-//    if ($vid !== '') {
-//        $content = "<p id='shipin'><iframe id='aaa' height=300 width=100% src=\"http://v.qq.com/iframe/player.html?vid={$vid}&auto=0\" frameborder=0 allowfullscreen></iframe></p>" . $content;
-//    }
+
     $pic = cut($html, 'var msg_cdn_url = "', '"');
     if (url_exists($long) == 1) {
         echo "<script>alert('\u7f51\u5740\u4e0d\u5b58\u5728');location.href='index.php'</script>";
@@ -166,14 +164,15 @@ if ($_GET['act'] == 'add') {
     $qptime = trim($_POST['qptime']);
     $ispl = trim($_POST['ispl']);
     $is_quanping2 = trim($_POST['is_quanping2']);
-    //$ywyuedu='qq';
-    //$sql = "insert into tbl_info values (0,'".$title."','".addslashes($content)."','".$rowad['ad_img']."','".$rowad['ad_link']."','".$_COOKIE['username']."',0,0,'".date('Y-m-d H:i:s')."')";
+
     if ($rowad['wechat_url'] != "") {
         $long = $rowad['wechat_url'];
     }
+
     if ($rowad['wechat_name'] != "") {
         $gongzhonghao = $rowad['wechat_name'];
     }
+
     $sql = "insert into tbl_info values (0,'" . urldecode($title) . "','" . addslashes($content) . "','" . $rowad['ad_img'] . "','" . $rowad['ad_img_one'] . "','" . $rowad['ad_img_two'] . "','" . $rowad['ad_link'] . "','" . $_COOKIE['username'] . "',0,0,'" . date('Y-m-d') . "','" . $rowad['adtelnumber'] . "','" . $rowad['adqqnumber'] . "','" . $ifadtop . "','" . $gongzhonghao . "','" . $ifPublicNumber . "','" . $rowad['erweima'] . "','" . $ywyuedu . "','" . $infoid . "','" . $daili . "','" . $sharepic . "','" . $sharedesc . "','" . $adquanping . "','" . (int)$_POST['adid'] . "','" . (int)$_POST['music'] . "','" . (int)$_POST['autoplay'] . "','" . $rowad['gzurl'] . "','" . $zhedie . "','" . $qptime . "','" . $long . "','" . $ispl . "','" . $is_quanping2 . "',0)";
     mysql_query($sql);
     echo "<script type='text/javascript'>alert('\u53d1\u5e03\u6210\u529f\uff01');location.href='view.php?fid=" . $infoid . "';</script>";
@@ -362,22 +361,7 @@ if ($_GET['act'] == 'add') {
 </head>
 <body>
 <div class="apply" id="apply">
-    <p style="text-align:left;padding-left:10px;">发布文章
-
-        <!-- 隐藏 -->
-        <span style="visibility: hidden;float:right;font-size:0.7em;margin-right:10px; line-height:22px">
-		账户:<a><?php echo $_COOKIE['username']; ?>&nbsp;</a>
-            <?php if (empty($maiguo['id'])) { ?>
-                <a href="vip.php" class="new_btn">点击充值</a>
-            <?php } else { ?>
-                VIP <a href="vip.php" class="new_btn">点击充值</a>
-            <?php } ?>
-            <br>
-		<a>剩余文章:<?= $s ?>&nbsp;&nbsp;天数:<?= $tt ?>天</a></span>
-        <!-- 隐藏 -->
-
-
-    </p>
+    <p style="text-align:left;padding-left:10px;">发布文章</p>
     <form action="?act=add" id="signupok" method="post" name="addform" enctype="multipart/form-data">
         <input type="hidden" name="artid" value="<?php echo time() . rand(10, 1000); ?>"/>
         <input type="hidden" name="sharepic" id="sharepic">
@@ -401,11 +385,9 @@ if ($_GET['act'] == 'add') {
         </dl>
         <div id="more" style="display:block">
 
-
             <dl class="clearfix" style="display:none;">
                 <dd>
                     <select class="input_txt sel" name="adid">
-<!--                        <option value="">请选择广告</option>-->
                         <?
                         $sql = "select * from tbl_ad where userid = '" . $_COOKIE['userid'] . "' ORDER by id DESC";
                         $query = mysql_query($sql);
@@ -418,7 +400,6 @@ if ($_GET['act'] == 'add') {
                     </select>
                 </dd>
             </dl>
-
 
             <dl class="clearfix">
                 <dd style="display: none">
@@ -442,11 +423,13 @@ if ($_GET['act'] == 'add') {
                         <input class="rad" name="adweizhi" type="radio" value="3" data-labelauty="跑马灯[底]"/><br>
                         <input class="rad" name="adweizhi" type="radio" id="adweizhibtm" checked="checked" value="7" data-labelauty="顶部固定、底部悬浮"/>
                     </dd>
+
                     <dd>
                         <span style=" color:#f00; float:left">全屏广告：</span>
                         <input onClick="qpShow();" class="rad" type="radio" name="adquanping" value="1" id="adquanping" class="radioItem" data-labelauty="显示"/>
                         <input onClick="qpHide();" class="rad" name="adquanping" type="radio" id="adquanping2" value="0" checked="CHECKED" class="radioItem" data-labelauty="隐藏"/>
                     </dd>
+
                     <dd class="quanpingtime" style="display:none; padding-left:20px;">
                         <span style=" color:#f00; float:left">全屏时间：</span>
                         <input class="rad" type="radio" name="qptime" value="3" id="qptime" class="radioItem" data-labelauty="3秒"/>
@@ -492,10 +475,12 @@ if ($_GET['act'] == 'add') {
                 </div>
             </dl>
         </div>
-        <div align="center">
-        </div>
+
+        <div align="center"> </div>
+
         <script src="js/jquery-labelauty.js"></script>
         <link rel="stylesheet" href="css/jquery-labelauty.css">
+
         <script language="javascript">
             $(document).ready(function () {
                 if ($.cookie('adweizhi') != null && $.cookie('adweizhi') != 'undefined') {
@@ -503,6 +488,7 @@ if ($_GET['act'] == 'add') {
                     $("input[name='adweizhi'][value=" + cweizhi + "]").attr("checked", true);
                 }
             });
+
             $(document).ready(function () {
                 $("#zhankaibtn").click(function () {
                     $("#morexx").show();
@@ -515,6 +501,7 @@ if ($_GET['act'] == 'add') {
                     $("#shouqibtn").hide();
                 })
             });
+
             $(function () {
                 $(':input').labelauty();
             });
@@ -529,30 +516,33 @@ if ($_GET['act'] == 'add') {
                 $(".is_quanping2").hide();
             }
         </script>
-        <div class="cjfenlei"><a id="pc_0" class="cjclas" href="javascript:void(0);">热门</a> <a id="pc_1" class="cjclas"
-                                                                                               href="javascript:void(0);">推荐</a>
-            <a id="pc_2" class="cjclas" href="javascript:void(0);">段子</a> <a id="pc_3" class="cjclas"
-                                                                             href="javascript:void(0);">养生</a> <a
-                    id="pc_4" class="cjclas" href="javascript:void(0);">私房</a> <a id="pc_5" class="cjclas"
-                                                                                  href="javascript:void(0);">八卦</a> <a
-                    id="pc_6" class="cjclas" href="javascript:void(0);">生活</a> <a id="pc_7" class="cjclas"
-                                                                                  href="javascript:void(0);">财经</a> <a
-                    id="pc_8" class="cjclas" href="javascript:void(0);">汽车</a> <a id="pc_9" class="cjclas"
-                                                                                  href="javascript:void(0);">科技</a> <a
-                    id="pc_10" class="cjclas" href="javascript:void(0);">潮人</a> <a id="pc_11" class="cjclas"
-                                                                                   href="javascript:void(0);">辣妈</a> <a
-                    id="pc_12" class="cjclas" href="javascript:void(0);">点赞</a> <a id="pc_13" class="cjclas"
-                                                                                   href="javascript:void(0);">旅行</a> <a
-                    id="pc_14" class="cjclas" href="javascript:void(0);">职场</a> <a id="pc_15" class="cjclas"
-                                                                                   href="javascript:void(0);">美食</a> <a
-                    id="pc_16" class="cjclas" href="javascript:void(0);">古今</a> <a id="pc_17" class="cjclas"
-                                                                                   href="javascript:void(0);">学霸</a> <a
-                    id="pc_18" class="cjclas" href="javascript:void(0);">星座</a> <a id="pc_19" class="cjclas"
-                                                                                   href="javascript:void(0);">体育</a> <a
-                    id="pc_20" class="cjclas" href="http://weixin.sogou.com/?p=73141200&kw=">更多</a></div>
+
+        <div class="cjfenlei">
+            <a id="pc_0" class="cjclas" href="javascript:void(0);">热门</a>
+            <a id="pc_1" class="cjclas" href="javascript:void(0);">推荐</a>
+            <a id="pc_2" class="cjclas" href="javascript:void(0);">段子</a>
+            <a id="pc_3" class="cjclas" href="javascript:void(0);">养生</a>
+            <a id="pc_4" class="cjclas" href="javascript:void(0);">私房</a>
+            <a id="pc_5" class="cjclas" href="javascript:void(0);">八卦</a>
+            <a id="pc_6" class="cjclas" href="javascript:void(0);">生活</a>
+            <a id="pc_7" class="cjclas" href="javascript:void(0);">财经</a>
+            <a id="pc_8" class="cjclas" href="javascript:void(0);">汽车</a>
+            <a id="pc_9" class="cjclas" href="javascript:void(0);">科技</a>
+            <a id="pc_10" class="cjclas" href="javascript:void(0);">潮人</a>
+            <a id="pc_11" class="cjclas" href="javascript:void(0);">辣妈</a>
+            <a id="pc_12" class="cjclas" href="javascript:void(0);">点赞</a>
+            <a id="pc_13" class="cjclas" href="javascript:void(0);">旅行</a>
+            <a id="pc_14" class="cjclas" href="javascript:void(0);">职场</a>
+            <a id="pc_15" class="cjclas" href="javascript:void(0);">美食</a>
+            <a id="pc_16" class="cjclas" href="javascript:void(0);">古今</a>
+            <a id="pc_17" class="cjclas" href="javascript:void(0);">学霸</a>
+            <a id="pc_18" class="cjclas" href="javascript:void(0);">星座</a>
+            <a id="pc_19" class="cjclas" href="javascript:void(0);">体育</a>
+            <a id="pc_20" class="cjclas" href="http://weixin.sogou.com/?p=73141200&kw=">更多</a>
+        </div>
+
         <div class="cjcontlist">
-            <ul class="cjlist">
-            </ul>
+            <ul class="cjlist"></ul>
         </div>
         <div class="blank10"></div>
     </form>
