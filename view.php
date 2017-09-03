@@ -124,59 +124,21 @@ if (is_numeric($infoid)) {
         </script>
     <?php } ?>
 </head>
+
 <body id="activity-detail" class="zh_CN ">
 <!--默认分享图标开始 -->
-<div style='margin:0 auto;width:0px;height:0px;overflow:hidden;'><img
-            src="<?= empty($row['share_pic']) ? '' : 'http://' . $_SERVER['HTTP_HOST'] . '/' . $row['share_pic'] ?>"
-            width="700"/></div>
+<div style='margin:0 auto;width:0px;height:0px;overflow:hidden;'>
+    <img src="<?= empty($row['share_pic']) ? '' : 'http://' . $_SERVER['HTTP_HOST'] . '/' . $row['share_pic'] ?>"
+         width="700"/>
+</div>
 <!--默认分享图标结束 -->
+
 <!--默认广告比例标准 -->
 <div style="display:none">
     <?php if ($rowad['ad_img'] != '') { ?> <img id='adbz' src="<?= $rowad['ad_img'] ?>"/>  <?php } ?>
 </div>
+
 <div id="allcontent">
-    <!--视频广告后顶部广告开始-->
-    <!--视频广告后顶部广告开始-->
-    <!--全屏广告开始 -->
-    <div class="box">
-        <div class="ad">
-            <a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link2'] ?>');" target="_blank"><img
-                        class="qpimg" src="<?= $rowad['quanping'] ?>"/></a>
-        </div>
-        <div class="ad_time">
-            广告时间还剩
-            <span id="t"><?php echo $row['qptime']; ?></span>秒
-        </div>
-    </div>
-    <?php
-    if ($row['is_quanping'] == 1 && $rowad['quanping'] != '') {
-        ?>
-        <script>
-            // JavaScript Document
-            function lxfEndtime() {
-                $t = $('#t').html();
-                if ($t != 0) {
-                    $('#t').html($t - 1);
-                    $i = setTimeout("lxfEndtime()", 1000);
-                } else {
-                    $('.box').hide();
-                    $('#qpafter').show();
-                    scroll(0, 0);
-                    $('#t').html(<?php echo $row['qptime'];?>);
-                    $('.ad_time').css({'width': '554px', 'height': '351px'});
-                    clearTimeout($i);
-                    //$("#spafter").show();
-                }
-            };
-            $(document).ready(function () {
-                $('.box').show();
-                $(this).hide();
-                $('.ad_time').animate({width: 155, height: 34}, 'slow');
-                lxfEndtime();
-            });
-        </script>
-    <?php } ?>
-    <!--全屏广告结束 -->
     <!--文章内容开始-->
     <div class="rich_media " style="padding:15px 10px">
         <div class="rich_media_inner" style="padding:0px">
@@ -192,146 +154,23 @@ if (is_numeric($infoid)) {
                 <?php } ?>
             </div>
         </div>
-        <!-- 顶部跑马灯 -->
-        <!-- 顶部跑马灯 -->
-        <!-- 视频广告开始-->
-        <?php
-        if (strpos($row['content'], "vid") > 0 && $rowad['shipinpic'] != '') { ?>
-            <div id="spdiv" class="spdiv">
-                <a id="imghref" href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link3'] ?>');"> <img
-                            id="spimg" class="spimg" src="<?= $rowad['shipinpic'] ?>"/> </a>
-                <div class="second" id="second">
-                    广告剩余
-                    <span id="second2">5</span>秒
-                </div>
-            </div>
-            <script type="text/javascript">
-                var daojs = 5;
-                $(function () {
-                    $("#spdiv").click(function () {
-                        mTop = $('#shipin').offset();
-                        var top = mTop.top;
-                        $('#spdiv').css('top', top);
-                        $('#spimg').show();
-                        $('#second').show();
-                        setTimeout('daoJiShi()', 1000);
-                    });
-                });
-
-                //调整视频广告图片
-                function changeSpDiv() {
-                    mTop = $('#shipin').offset();
-                    var top = mTop.top;
-                    $('#spdiv').css('top', top);
-                }
-
-                $(function () {
-                    changeSpDiv();
-                    //设置视频高度
-                    var iframeWeight = document.body.scrollWidth;
-                    if (iframeWeight > 640) {
-                        iframeWeight = 640;
-                    }
-                    $("#spiframe").height(iframeWeight / 1.33);
-                    //调整视频广告图片大小
-                    $("#spdiv").css("height", iframeWeight / 1.33)
-                    $("#spimg").css("height", iframeWeight / 1.33)
-                    $("#shipin").css("height", iframeWeight / 1.33)
-                });
-
-                function daoJiShi() {
-                    if (daojs >= 0) {
-                        $('#second2').html(daojs);
-                        daojs--;
-                        setTimeout('daoJiShi()', 1000);
-                    } else {
-                        $('#spdiv').css('display', 'none');
-                        var src = $('#spiframe').attr('src');
-                        var new_src = src.replace("&auto=0", "&auto=0");
-                        $('#spiframe').attr('src', new_src);
-                    }
-                }
-            </script>
-        <?php } ?>
-        <!-- 视频广告结束-->
-        <script>
-            function adClick(id, url) {
-                if (id != '') {
-                    $.post('ad_action.php', {id: id}, function (data) {
-                        if (data) {
-                            if (url != '#') {
-                                window.location.href = url;
-                            }
-                        }
-                    });
-                } else {
-                    alert('发生错误!');
-                }
-            }
-        </script>
-        <!--顶部悬浮(固定)开始 -->
-        <?php if ($row['ifweizhi'] == 0 || $row['ifweizhi'] == 4 || $row['ifweizhi'] == 5 || $row['ifweizhi'] == 6 || $row['ifweizhi'] == 7) { ?>
-            <div class="topad" id="topad" style="display: block; position: relative; top: 0px; padding-bottom:5px">
-                <div class="banner">
-                    <ul class="banList">
-                        <?php if ($rowad['ad_img'] != '') { ?>
-                            <li class="active"><a
-                                        href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
-                                            class="bannerImg" src="<?= $rowad['ad_img'] ?>"/></a></li>   <?php } ?>
-                        <?php if ($rowad['ad_img_one'] != '') { ?>
-                            <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
-                                            class="bannerImg" src="<?= $rowad['ad_img_one'] ?>"/></a></li>  <?php } ?>
-                        <?php if ($rowad['ad_img_two'] != '') { ?>
-                            <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
-                                            class="bannerImg" src="<?= $rowad['ad_img_two'] ?>"/></a></li>  <?php } ?>
-                    </ul>
-                    <div class="fomW">
-                        <div class="jsNav">
-                            <?php if ($rowad['ad_img'] != '') { ?><a href="javascript:;"
-                                                                     class="trigger current"></a>  <?php } ?>
-                            <?php if ($rowad['ad_img_one'] != '') { ?><a href="javascript:;"
-                                                                         class="trigger"></a>  <?php } ?>
-                            <?php if ($rowad['ad_img_two'] != '') { ?><a href="javascript:;"
-                                                                         class="trigger"></a>  <?php } ?>
-                        </div>
-                    </div>
-                </div>
-                <?php echo $telnum; ?>
-                <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img
-                            src="images/close.png" style="width: 35px;height: 35px" onClick="hideYt('topad','0');"
-                            data-gjalog="index_bottom_banner_close@atype=click"> </a>
-            </div>
-        <?php } ?>
-        <?php if ($row['ifweizhi'] == 0 || $row['ifweizhi'] == 4) { ?>
-            <script type="text/javascript">
-                window.onload = function () {
-                    menuFixed('topad');//是否悬浮
-                }
-            </script>
-        <?php } ?>
-        <!--顶部悬浮(固定)结束 -->
-
 
         <!-- 顶部悬浮跑马灯 -->
-            <div class="topad" id="topadPmd" style="display: block;">
-                <div class="str1 str_wrap" id="tPmd" style="width:100%;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
-                    <a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><?= $rowad['pmd'] ?></a>
-                </div>
-<!--                --><?php //echo $telnum; ?>
-<!--                <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> -->
-<!--                    <img src="images/close.png" style="width: 35px;height: 35px" onClick="hideYt('topadPmd','0');" data-gjalog="index_bottom_banner_close@atype=click"> -->
-<!--                </a>-->
+        <div class="topad" id="topadPmd" style="display: block;">
+            <div class="str1 str_wrap" id="tPmd" style="width:100%;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
+                <a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><?= $rowad['pmd'] ?></a>
             </div>
-            <link rel="stylesheet" href="css/liMarquee.css">
-            <script src="js/jquery.liMarquee.js"></script>
-            <script>
-                $(window).load(function () {
+        </div>
+        <link rel="stylesheet" href="css/liMarquee.css">
+        <script src="js/jquery.liMarquee.js"></script>
+        <script>
+            $(window).load(function () {
 //                    menuFixed('topadPmd');//是否悬浮
-                    $('#tPmd').liMarquee();
-                });
-            </script>
-
+                $('#tPmd').liMarquee();
+            });
+        </script>
         <!-- 顶部悬浮跑马灯结束 -->
+
         <div id="page-content" class="layout">
             <div id="img-content">
                 <div class="rich_media_content article-content" id="js_content">
@@ -380,6 +219,7 @@ if (is_numeric($infoid)) {
         </div>
     </div>
 </div>
+
 <?php
 if ($row['ispl'] == 1) {
     ?>
@@ -388,120 +228,40 @@ if ($row['ispl'] == 1) {
     <?php
 }
 ?>
-<!--底部固定开始-->
-<?php if ($row['ifweizhi'] == 2 || $row['ifweizhi'] == 6) { ?>
-    <div id="innerNav" style="padding: 10px 15px 5px;background-color: #f3f3f3;padding-top: 15px;"></div>
-    <div class="line_02"><span>广告</span></div>
-    <div id="innerNav" style="padding: 10px 15px 5px;background-color: #f3f3f3;  padding-bottom: 10px;"></div>
-    <div class="banner">
+
+<!--底部悬浮开始 -->
+<div id="bXfH"></div> <!--底部悬浮间隔 -->
+<div class="app-guide1 adweix " id="bannerDowm" style="display:block">
+    <div class="am-text-right">
+        <?php echo $telnum; ?>
+        <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img
+                    src="images/close.png" style="width: 35px;height: 35px" onClick="hideYt('bannerDowm','bXfH');"
+                    data-gjalog="index_bottom_banner_close@atype=click" data-bd-imgshare-binded="1"/> </a>
+    </div>
+    <div class="banner" id='bXf'>
         <ul class="banList">
             <?php if ($rowad['ad_img'] != '') { ?>
                 <li class="active"><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
                                 class="bannerImg" src="<?= $rowad['ad_img'] ?>"/></a></li>   <?php } ?>
             <?php if ($rowad['ad_img_one'] != '') { ?>
-                <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img class="bannerImg"
-                                                                                                     src="<?= $rowad['ad_img_one'] ?>"/></a>
-                </li>  <?php } ?>
+                <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
+                                class="bannerImg" src="<?= $rowad['ad_img_one'] ?>"/></a></li>  <?php } ?>
             <?php if ($rowad['ad_img_two'] != '') { ?>
-                <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img class="bannerImg"
-                                                                                                     src="<?= $rowad['ad_img_two'] ?>"/></a>
-                </li>  <?php } ?>
+                <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
+                                class="bannerImg" src="<?= $rowad['ad_img_two'] ?>"/></a></li>  <?php } ?>
         </ul>
         <div class="fomW">
             <div class="jsNav">
-                <?php if ($rowad['ad_img'] != '') { ?><a href="javascript:;" class="trigger current"></a>  <?php } ?>
+                <?php if ($rowad['ad_img'] != '') { ?><a href="javascript:;"
+                                                         class="trigger current"></a>  <?php } ?>
                 <?php if ($rowad['ad_img_one'] != '') { ?><a href="javascript:;" class="trigger"></a>  <?php } ?>
                 <?php if ($rowad['ad_img_two'] != '') { ?><a href="javascript:;" class="trigger"></a>  <?php } ?>
             </div>
         </div>
     </div>
-<?php } ?>
-<!--底部固定结束-->
-<!--底部悬浮开始 -->
-<?php if ($row['ifweizhi'] == 1 || $row['ifweizhi'] == 4 || $row['ifweizhi'] == 7) { ?>
-    <div id="bXfH"></div> <!--底部悬浮间隔 -->
-    <div class="app-guide1 adweix " id="bannerDowm" style="display:block">
-        <div class="am-text-right">
-            <?php echo $telnum; ?>
-            <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img
-                        src="images/close.png" style="width: 35px;height: 35px" onClick="hideYt('bannerDowm','bXfH');"
-                        data-gjalog="index_bottom_banner_close@atype=click" data-bd-imgshare-binded="1"/> </a>
-        </div>
-        <div class="banner" id='bXf'>
-            <ul class="banList">
-                <?php if ($rowad['ad_img'] != '') { ?>
-                    <li class="active"><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
-                                    class="bannerImg" src="<?= $rowad['ad_img'] ?>"/></a></li>   <?php } ?>
-                <?php if ($rowad['ad_img_one'] != '') { ?>
-                    <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
-                                    class="bannerImg" src="<?= $rowad['ad_img_one'] ?>"/></a></li>  <?php } ?>
-                <?php if ($rowad['ad_img_two'] != '') { ?>
-                    <li><a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><img
-                                    class="bannerImg" src="<?= $rowad['ad_img_two'] ?>"/></a></li>  <?php } ?>
-            </ul>
-            <div class="fomW">
-                <div class="jsNav">
-                    <?php if ($rowad['ad_img'] != '') { ?><a href="javascript:;"
-                                                             class="trigger current"></a>  <?php } ?>
-                    <?php if ($rowad['ad_img_one'] != '') { ?><a href="javascript:;" class="trigger"></a>  <?php } ?>
-                    <?php if ($rowad['ad_img_two'] != '') { ?><a href="javascript:;" class="trigger"></a>  <?php } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php } ?>
+</div>
 <!--底部悬浮结束 -->
-<!-- 底部跑马灯 -->
-<?php
-if ($row['ifweizhi'] == 3) {
-    ?>
-    <div id="downPmdH" style="height:90px"></div>
-    <div class="app-guide1 adweix " id="bannerDowmPmd" style="display:block">
-        <div class="am-text-right">
-            <?php echo $telnum; ?>
-            <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img
-                        src="images/close.png" style="width: 35px;height: 35px"
-                        onClick="hideYt('bannerDowmPmd','downPmdH');"
-                        data-gjalog="index_bottom_banner_close@atype=click" data-bd-imgshare-binded="1"/> </a>
-        </div>
-        <div class="str1 str_wrap" id="bPmd"
-             style="width:100%;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
-            <a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><?= $rowad['pmd'] ?></a></div>
-    </div>
-    <link rel="stylesheet" href="css/liMarquee.css">
-    <script src="js/jquery.liMarquee.js"></script>
-    <script>
-        $(window).load(function () {
-            $('#bPmd').liMarquee();
-        });
-    </script>
-<?php } ?>
-<!-- 底部跑马灯 -->
-<!--用户菜单开始 -->
-<?php
-if (!empty($_COOKIE['username'])) {
-    if ($row['userid'] == $_COOKIE['username']) {
-?>
-        <script type="text/javascript">
-            (function () {
-                var ul = $("#navs"), li = $("#navs li"), i = li.length, n = i - 1, r = 60;
-                ul.click(function () {
-                    $(this).toggleClass('active');
-                    if ($(this).hasClass('active')) {
-                        for (var a = 0; a < i; a++) {
-                            li.eq(a).show();
-                        }
-                    } else {
-                        li.hide();
-                    }
-                });
-            })($);
-        </script>
-<?php
-    }
-}
-?>
-<!--用户菜单结束 -->
+
 <script type="text/javascript">
     function hideYt(id1, id2) {
         $("#" + id1).hide();
@@ -532,50 +292,7 @@ if (!empty($_COOKIE['username'])) {
         <?php }?>
     });
 </script>
-<!-- 底部跑马灯 -->
-<!-- 底部跑马灯 -->
-<!--背景音乐开始 -->
-<?php
-if ($row['musicid'] != 0) {
-    $sql = "select * from tbl_music where id = " . $row['musicid'];
-    $query = mysql_query($sql);
-    $rowmusic = mysql_fetch_array($query);
-    ?>
-    <div class="meipian_meta"><span id="msplay" class="music" onClick="switchsound()"> <i play="on" id="music_icon"></i> <span
-                    id="music_desc">清晨</span> </span>
-        <script>
-            var music_url = "<?php echo $rowmusic['path']; ?>";
-        </script>
-        <script src="music_autoplay.js"></script>
-        <?php
-        if ($row['autoplay'] == 1) {
-            ?>
-            <!--控制是否自动播放-->
-            <script>
-                if (audio == null) {
-                    audio = document.createElement('audio');
-                    audio.id = 'bgsound';
-                    audio.src = music_url;
-                    audio.loop = 'loop';
-                    audio.preload = 'auto';
-                    document.body.appendChild(audio);
-                }
-                if (audio.paused) {
-                    audio.play();
-                    icon.setAttribute("play", "stop");
-                }
-                else if (new Date().getTime() > timestamp + 1000) {
-                    audio.pause();
-                    icon.setAttribute("play", "on");
-                }
-            </script>
-            <!--控制是否自动播放结束-->
-            <?php
-        }
-        ?>
-    </div>
-<?php } ?>
-<!--背景音乐结束 -->
+
 <!-- 弹出二维码开始 -->
 <script type="text/javascript" src="/js/dialog/classie.js"></script>
 <script type="text/javascript" src="/js/dialog/dialogFx.js"></script>
@@ -590,6 +307,7 @@ if ($row['musicid'] != 0) {
     })();
 </script>
 <!-- 弹出二维码结束-->
+
 <script>
     window.shareData = {
         "imgUrl": "<?=empty($row['share_pic']) ? '' : 'http://' . $_SERVER['HTTP_HOST'] . '/' . $row['share_pic']?>",
