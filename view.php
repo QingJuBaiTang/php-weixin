@@ -136,10 +136,6 @@ if (is_numeric($infoid)) {
 </div>
 <div id="allcontent">
     <!--视频广告后顶部广告开始-->
-    <?php if ($row['is_quanping'] == 1 && $rowad['quanping2'] != '' && $row['is_quanping2'] == 1) { ?>
-        <a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link2'] ?>');" id="qpafter"
-           style="display:none; max-width:740px"><img src="<?= $rowad['quanping2'] ?>" class="bannerImg"/></a>
-    <?php } ?>
     <!--视频广告后顶部广告开始-->
     <!--全屏广告开始 -->
     <div class="box">
@@ -314,36 +310,34 @@ if (is_numeric($infoid)) {
             </script>
         <?php } ?>
         <!--顶部悬浮(固定)结束 -->
+
+
         <!-- 顶部悬浮跑马灯 -->
-        <?php
-        if ($row['ifweizhi'] == 8) {
-            ?>
-            <div class="topad" id="topadPmd" style="display: block; position: relative; top: 0px;">
-                <div class="str1 str_wrap" id="tPmd"
-                     style="width:100%;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
+            <div class="topad" id="topadPmd" style="display: block;">
+                <div class="str1 str_wrap" id="tPmd" style="width:100%;left:0px;bottom:0px;height:65px;line-height:65px;vertical-align:middle;font-size:38px;font-weight:900;color:#fff;background-image: url('images/bottom.jpg')">
                     <a href="javascript:adClick(<?= $row['id'] ?>,'<?= $rowad['ad_link'] ?>');"><?= $rowad['pmd'] ?></a>
                 </div>
-                <?php echo $telnum; ?>
-                <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> <img
-                            src="images/close.png" style="width: 35px;height: 35px" onClick="hideYt('topadPmd','0');"
-                            data-gjalog="index_bottom_banner_close@atype=click"> </a>
+<!--                --><?php //echo $telnum; ?>
+<!--                <a href="javascript:;" class="" style="width: 35px;height: 35px;padding-top: 5px;"> -->
+<!--                    <img src="images/close.png" style="width: 35px;height: 35px" onClick="hideYt('topadPmd','0');" data-gjalog="index_bottom_banner_close@atype=click"> -->
+<!--                </a>-->
             </div>
             <link rel="stylesheet" href="css/liMarquee.css">
             <script src="js/jquery.liMarquee.js"></script>
             <script>
                 $(window).load(function () {
-                    menuFixed('topadPmd');//是否悬浮
+//                    menuFixed('topadPmd');//是否悬浮
                     $('#tPmd').liMarquee();
                 });
             </script>
-        <?php } ?>
+
         <!-- 顶部悬浮跑马灯结束 -->
         <div id="page-content" class="layout">
             <div id="img-content">
                 <div class="rich_media_content article-content" id="js_content">
                     <?php echo $row['content']; ?>
-                    <font style="font-size:12px; float:right; padding-right:5px">本页面内容来源于网络，如有侵权，请告知删除!</font
-                    ></div>
+                    <font style="font-size:12px; float:right; padding-right:5px">本页面内容来源于网络，如有侵权，请告知删除!</font>
+                </div>
                 <!--二维码弹窗内容开始-->
                 <?php if ($row['qrcode'] != '') { ?>
                     <div id="somedialog" class="dialog">
@@ -487,16 +481,7 @@ if ($row['ifweizhi'] == 3) {
 <?php
 if (!empty($_COOKIE['username'])) {
     if ($row['userid'] == $_COOKIE['username']) {
-        ?>
-        <ul id="navs" data-open="收起" data-close="菜单">
-            <li style="transition-delay: 0ms; transform: translate(60px, 0px); display:none"><a href="logout.php">退出</a>
-            </li>
-            <li style="transition-delay: 50ms; transform: translate(42.4264px, -42.4264px);display:none"><a
-                        href="fxedit.php?fid=<?= $row['infoid'] ?>"
-                        onClick="if (confirm('确定要编辑吗？')) return true; else return false;">编辑</a></li>
-            <li style="transition-delay: 100ms; transform: translate(0, -60px);display:none"><a href="index.php">首页</a>
-            </li>
-        </ul>
+?>
         <script type="text/javascript">
             (function () {
                 var ul = $("#navs"), li = $("#navs li"), i = li.length, n = i - 1, r = 60;
@@ -512,7 +497,7 @@ if (!empty($_COOKIE['username'])) {
                 });
             })($);
         </script>
-        <?php
+<?php
     }
 }
 ?>

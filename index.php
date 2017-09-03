@@ -43,9 +43,7 @@ if ($_GET['act'] == 'add') {
     if (stristr($long, "toutiao.com")) {
         $long = str_replace('m.toutiao.com', 'www.toutiao.com', $long);
     }
-    //$telno='134843204';
     $telno = trim($_POST['telnumber']);
-    //$ifadtop='1';
     $ifadtop = trim($_POST['adweizhi']);
     $infoid = trim($_POST['artid']);;
     $html = get_contents($long);
@@ -65,9 +63,6 @@ if ($_GET['act'] == 'add') {
     }
     $html = str_replace('data-src', 'src', $html);
     $vid = cut($html, 'vid=', '&'); //获取视频ID
-    //$vid=substr($vid,0,11);
-    //echo $vid;
-    //	die;
     if (stristr($long, "mp.weixin.qq.com")) {
         $caiji = array("title" => array(".rich_media_title:first", "text"), "content" => array("#js_content", "html"), "body" => array("body", "html"), "gongzhonghao" => array(".rich_media_meta_link", "text"), "ywyuedu" => array("#js_toobar3", "html"),);
     } elseif (stristr($long, "toutiao.com")) {
@@ -127,7 +122,7 @@ if ($_GET['act'] == 'add') {
 
         $sql = "insert into tbl_info values (0,'" . urldecode($title) . "','" . addslashes($content) . "','" . $rowad['ad_img'] . "','" . $rowad['ad_img_one'] . "','" . $rowad['ad_img_two'] . "','" . $rowad['ad_link'] . "','" . $_COOKIE['username'] . "',0,0,'" . date('Y-m-d') . "','" . $rowad['adtelnumber'] . "','" . $rowad['adqqnumber'] . "','" . $ifadtop . "','" . $gongzhonghao . "','" . $ifPublicNumber . "','" . $rowad['erweima'] . "','" . $ywyuedu . "','" . $infoid . "','" . $daili . "','" . $sharepic . "','" . $sharedesc . "','" . $adquanping . "','" . (int)$_POST['adid'] . "','" . (int)$_POST['music'] . "','" . (int)$_POST['autoplay'] . "','" . $rowad['gzurl'] . "','" . $zhedie . "','" . $qptime . "','" . $long . "','" . $ispl . "','" . $is_quanping2 . "',0)";
         mysql_query($sql);
-        echo "<script type='text/javascript'>alert('\u53d1\u5e03\u6210\u529f\uff01');location.href='fxedit.php?fid=" . $infoid . "';</script>";
+        echo "<script type='text/javascript'>alert('\u53d1\u5e03\u6210\u529f\uff01');location.href='view.php?fid=" . $infoid . "';</script>";
     }
 
     $quyu = '';
@@ -154,9 +149,9 @@ if ($_GET['act'] == 'add') {
     $sharedesc = cut($body, 'var msg_desc = "', '"'); // 过滤描述
     $shareimage = str_replace('http://mmbiz', 'image_proxy.php?1=1&siteid=1&url=http://mmbiz', $shareimage);
     $sharepic = $shareimage;
-    if ($vid !== '') {
-        $content = "<p id='shipin'><iframe id='aaa' height=300 width=100% src=\"http://v.qq.com/iframe/player.html?vid={$vid}&auto=0\" frameborder=0 allowfullscreen></iframe></p>" . $content;
-    }
+//    if ($vid !== '') {
+//        $content = "<p id='shipin'><iframe id='aaa' height=300 width=100% src=\"http://v.qq.com/iframe/player.html?vid={$vid}&auto=0\" frameborder=0 allowfullscreen></iframe></p>" . $content;
+//    }
     $pic = cut($html, 'var msg_cdn_url = "', '"');
     if (url_exists($long) == 1) {
         echo "<script>alert('\u7f51\u5740\u4e0d\u5b58\u5728');location.href='index.php'</script>";
@@ -181,7 +176,7 @@ if ($_GET['act'] == 'add') {
     }
     $sql = "insert into tbl_info values (0,'" . urldecode($title) . "','" . addslashes($content) . "','" . $rowad['ad_img'] . "','" . $rowad['ad_img_one'] . "','" . $rowad['ad_img_two'] . "','" . $rowad['ad_link'] . "','" . $_COOKIE['username'] . "',0,0,'" . date('Y-m-d') . "','" . $rowad['adtelnumber'] . "','" . $rowad['adqqnumber'] . "','" . $ifadtop . "','" . $gongzhonghao . "','" . $ifPublicNumber . "','" . $rowad['erweima'] . "','" . $ywyuedu . "','" . $infoid . "','" . $daili . "','" . $sharepic . "','" . $sharedesc . "','" . $adquanping . "','" . (int)$_POST['adid'] . "','" . (int)$_POST['music'] . "','" . (int)$_POST['autoplay'] . "','" . $rowad['gzurl'] . "','" . $zhedie . "','" . $qptime . "','" . $long . "','" . $ispl . "','" . $is_quanping2 . "',0)";
     mysql_query($sql);
-    echo "<script type='text/javascript'>alert('\u53d1\u5e03\u6210\u529f\uff01');location.href='fxedit.php?fid=" . $infoid . "';</script>";
+    echo "<script type='text/javascript'>alert('\u53d1\u5e03\u6210\u529f\uff01');location.href='view.php?fid=" . $infoid . "';</script>";
 }
 ?>
 <!DOCTYPE HTML>
@@ -407,7 +402,7 @@ if ($_GET['act'] == 'add') {
         <div id="more" style="display:block">
 
 
-            <dl class="clearfix">
+            <dl class="clearfix" style="display:none;">
                 <dd>
                     <select class="input_txt sel" name="adid">
 <!--                        <option value="">请选择广告</option>-->
@@ -435,7 +430,7 @@ if ($_GET['act'] == 'add') {
                     </select>
                 </dd>
 
-                <dl class="clearfix">
+                <dl class="clearfix" style="display: none">
                     <dd><font color="#f00">广告位置：</font><br>
                         <input class="rad" type="radio" name="adweizhi" value="0" data-labelauty="顶部悬浮"/>
                         <input class="rad" name="adweizhi" type="radio" value="1" data-labelauty="底部悬浮"/>
