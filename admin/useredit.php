@@ -61,7 +61,7 @@ if ($_GET['act'] == 'add') {
     $sql = "INSERT INTO tbl_user  (id,username,userpwd,qq,anums,ctime,userid,beizhu1,beizhu2,shuyu,duankouzong,duankouyong,adnums)" . "VALUES(
 	0,
 	'" . $_POST["username"] . "',
-	'" . $pwd . "',
+	'" . md5($pwd) . "',
 	'" . $_POST["qq"] . "',
 	'" . $_POST["anums"] . "',
 	'" . date('Y-m-d H:i:s') . "',
