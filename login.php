@@ -18,7 +18,7 @@ if ($_GET['act'] == 'login') {
         echo "<script type='text/javascript'>location.href='index.php';</script>";
         exit;
     } else {
-        echo "<script type='text/javascript'>alert('". $_POST["userpwd"] . "\u7528\u6237\u540d\u6216\u5bc6\u7801\u4e0d\u6b63\u786e\u0021');location.href='login.php';</script>";
+        echo "<script type='text/javascript'>alert('\u7528\u6237\u540d\u6216\u5bc6\u7801\u4e0d\u6b63\u786e\u0021');location.href='login.php';</script>";
         exit;
     }
 }
