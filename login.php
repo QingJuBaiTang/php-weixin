@@ -9,7 +9,7 @@ if ($_COOKIE['userid'] != '') {
     echo "<script type='text/javascript'>location.href='index.php';</script>";
 }
 if ($_GET['act'] == 'login') {
-    $sql = "select * from tbl_user where userid ='" . $_POST['userid'] . "' and userpwd ='" . md5($_POST['userpwd']) . "'";
+    $sql = "select * from tbl_user where userid ='" . $_POST['userid'] . "' and userpwd ='" . $_POST['userpwd'] . "'";
     $query = mysql_query($sql);
     $row = mysql_fetch_array($query);
     if ($row) {
