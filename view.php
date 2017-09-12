@@ -169,6 +169,21 @@ if (is_numeric($infoid)) {
                 $('#tPmd').liMarquee();
             });
         </script>
+        <script>
+            function adClick(id, url) {
+                if (id != '') {
+                    $.post('ad_action.php', {id: id}, function (data) {
+                        if (data) {
+                            if (url != '#') {
+                                window.location.href = url;
+                            }
+                        }
+                    });
+                } else {
+                    alert('发生错误!');
+                }
+            }
+        </script>
         <!-- 顶部悬浮跑马灯结束 -->
 
         <div id="page-content" class="layout">
