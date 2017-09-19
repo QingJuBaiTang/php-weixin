@@ -69,9 +69,9 @@ if ($_GET['act'] == 'login') {
         <div class="topshow" id="topshow">
             <div class="flexslider">
                 <ul class="slides">
-                    <li><img src="images/ss1.jpg"/></li>
-                    <li><img src="images/ss2.jpg"/></li>
-                    <li><img src="images/ss3.jpg"/></li>
+                    <li><img src="images/646600057.jpg"/></li>
+                    <li><img src="images/1166880384.jpg"/></li>
+                    <li><img src="images/1661071530.jpg"/></li>
                 </ul>
             </div>
         </div>
