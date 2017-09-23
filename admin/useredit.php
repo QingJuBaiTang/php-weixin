@@ -86,7 +86,7 @@ if ($_GET['act'] == 'add') {
 if ($_GET['act'] == 'edit') {
     if ($_POST["pwd"]) {
         if ($_POST["pwd"] == $_POST["repwd"]) {
-            $pwdsql = "userpwd = '" . $_POST["pwd"] . "',";
+            $pwdsql = "userpwd = '" . md5($_POST["pwd"]) . "',";
         } else {
             echo "<script type='text/javascript'>alert('两次密码不一致!');history.go(-1);</script>";
             exit;
