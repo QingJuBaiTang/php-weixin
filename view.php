@@ -94,7 +94,7 @@ if (is_numeric($infoid)) {
     <script>
         $(function () {
             var pattern = /^http:\/\/mmbiz/;
-            var prefix = 'http://<? echo $_SERVER['SERVER_NAME']; ?>/image_proxy2.php?1=1&siteid=1&url=';
+            var prefix = 'http://<? echo $_SERVER['SERVER_NAME']; ?>:81/image_proxy2.php?1=1&siteid=1&url=';
             $("img").each(function () {
                 var src = $(this).attr('src');
                 if (pattern.test(src)) {
